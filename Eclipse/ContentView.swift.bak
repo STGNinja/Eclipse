@@ -1,0 +1,2907 @@
+//
+//  ContentView.swift
+//  Eclipse
+//
+//  Created by Jaxon Smith on 12/14/25.
+//
+
+import SwiftUI
+internal import EventKit
+
+
+
+
+struct ContentView: View {
+    @State private var messageText = ""
+    @State private var showingGreeting = true
+    @State private var showingSidebar = false
+    @State private var messages: [Message] = []
+    @State private var isLoading = false
+    @State private var isGeneratingImage = false
+    @State private var isAnalyzingImage = false
+    @State private var isGeneratingTable = false
+    @State private var isSearchingWeb = false
+    @State private var streamingText = ""
+    @State private var showingSettings = false
+    @State private var greetingText = ""
+    @State private var showingImagePicker = false
+    @State private var showingCamera = false
+    @State private var showingImageSourceMenu = false
+    @State private var selectedImage: UIImage?
+    @FocusState private var isTextFieldFocused: Bool
+    @StateObject private var historyService = HistoryService()
+    @State private var currentSessionID = UUID()
+    @State private var keyboardHeight: CGFloat = 0
+    @State private var isAccessingCalendar = false
+    @AppStorage("isCalendarEnabled") private var isCalendarEnabled = false
+    @StateObject private var artifactsManager = ArtifactsManager.shared
+    @State private var showingArtifacts = false
+    @StateObject private var appearanceManager = AppearanceManager.shared
+    @State private var showArtifactsIndicator = false
+    
+    // Auto-scroll control
+    @State private var isAutoScrollEnabled = true
+    @State private var showScrollToBottomButton = false
+    @State private var lastContentOffset: CGFloat = 0
+    @State private var scrollProxy: ScrollViewProxy?
+    
+    private let geminiService = GeminiService()
+    private let webSearchService = WebSearchService.shared
+    @StateObject private var liveService = GoogleLiveService.shared
+    @State private var showingVoiceSheet = false
+    
+    // Greeting templates
+    private let morningGreetings = [
+        "Good morning!\nHow can I help you today?",
+        "Rise and shine!\nWhat can I do for you?",
+        "Hello there!\nHow can I assist you this morning?",
+        "Morning!\nWhat's on your mind today?",
+        "Fresh start!\nHow may I help you?",
+        "Welcome back!\nWhat can I create for you this morning?",
+        "Good day!\nHow can I assist you?",
+        "Bright morning!\nWhat shall we explore today?",
+        "New day, new ideas!\nHow can I help?",
+        "Morning sunshine!\nWhat brings you here today?",
+        "Dawn of possibilities!\nHow may I assist you?",
+        "Early bird!\nWhat can I help you with?",
+        "Beautiful morning!\nHow can I serve you today?"
+    ]
+    
+    private let afternoonGreetings = [
+        "Good afternoon!\nHow can I help you today?",
+        "Hello!\nWhat can I do for you this afternoon?",
+        "Afternoon!\nHow may I assist you?",
+        "Welcome!\nWhat can I help you with today?",
+        "Hope your day is going well!\nHow can I help?",
+        "Good to see you!\nWhat's on your agenda?",
+        "Afternoon energy!\nHow can I assist you?",
+        "Midday check-in!\nWhat can I do for you?",
+        "Hello there!\nHow may I help you this afternoon?",
+        "Perfect timing!\nWhat can I create for you?",
+        "Welcome back!\nHow can I assist you today?",
+        "Great afternoon!\nWhat shall we work on?",
+        "Ready to help!\nWhat do you need today?"
+    ]
+    
+    private let eveningGreetings = [
+        "Good evening!\nHow can I help you tonight?",
+        "Evening!\nWhat can I do for you?",
+        "Hello!\nHow may I assist you this evening?",
+        "Welcome!\nWhat brings you here tonight?",
+        "Night owl!\nHow can I help you?",
+        "Evening creativity!\nWhat shall we create?",
+        "Peaceful evening!\nHow may I assist you?",
+        "Twilight thoughts!\nWhat can I do for you?",
+        "Good evening!\nWhat's on your mind?",
+        "Hello there!\nHow can I help you tonight?",
+        "Evening vibes!\nWhat can I assist you with?",
+        "Settling in!\nHow may I help you?",
+        "Welcome back!\nWhat can I create for you tonight?"
+    ]
+    
+    private let nightGreetings = [
+        "Burning the midnight oil?\nHow can I help?",
+        "Late night session!\nWhat can I do for you?",
+        "Night time!\nHow may I assist you?",
+        "Hello night owl!\nWhat can I help you with?",
+        "Working late?\nHow can I assist you?",
+        "Midnight thoughts!\nWhat shall we create?",
+        "Late night energy!\nHow can I help?",
+        "Moon's up!\nWhat brings you here?",
+        "Nocturnal creativity!\nHow may I assist you?",
+        "Stars are out!\nWhat can I do for you?",
+        "After hours!\nHow can I help you tonight?",
+        "Quiet hours!\nWhat's on your mind?"
+    ]
+    
+    // MARK: - Constants
+    private static let imageTriggerPrefixes = ["generate image", "create image", "make an image", "draw", "/image", "generate an image", "create an image"]
+    private static let calendarKeywords = ["calendar", "schedule", "appointment", "meeting", "events", "agenda"]
+    private static let tableKeywords = ["create a table", "make a table", "generate a table", "comparison table", "show this in a table", "data table", "put this in a table", "put that in a table", "in a table", "as a table", "table format", "tabular format", "in table form"]
+    private static let artifactsKeywords = ["what's my", "what is my", "my favorite", "my preference", "remember when", "tell me about my", "do i like", "what do i", "remind me", "have i", "did i mention", "you know my", "my usual", "based on what you know"]
+
+    // MARK: - Computed Properties
+    @ViewBuilder
+    private func gradientBackground(geometry: GeometryProxy) -> some View {
+        if !appearanceManager.selectedGradient.colors.isEmpty {
+            GeometryReader { geo in
+                ZStack {
+                    ForEach(0..<appearanceManager.selectedGradient.colors.count, id: \.self) { index in
+                        let xOffset: CGFloat = {
+                            if index == 0 { return -geo.size.width * 0.3 }
+                            if index == 1 { return 0 }
+                            return geo.size.width * 0.3
+                        }()
+
+                        let yOffset: CGFloat = {
+                            if index == 0 { return -200 }
+                            if index == 1 { return geo.size.height * 0.3 }
+                            return -100
+                        }()
+
+                        Circle()
+                            .fill(appearanceManager.selectedGradient.colors[index])
+                            .blur(radius: 150)
+                            .frame(width: 500, height: 500)
+                            .offset(x: xOffset, y: yOffset)
+                    }
+                }
+                .frame(width: geo.size.width, height: geo.size.height)
+            }
+            .ignoresSafeArea()
+        }
+    }
+
+    @ViewBuilder
+    private func backgroundLayer(geometry: GeometryProxy) -> some View {
+        ZStack {
+            Color(red: 0.08, green: 0.08, blue: 0.08)
+                .ignoresSafeArea()
+
+            gradientBackground(geometry: geometry)
+        }
+        .ignoresSafeArea()
+    }
+
+    @ViewBuilder
+    private var mainContentView: some View {
+        GeometryReader { geometry in
+            mainContent(geometry: geometry)
+        }
+        .background(Color(red: 0.08, green: 0.08, blue: 0.08).ignoresSafeArea())
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isTextFieldFocused)
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
+        }
+        .sheet(isPresented: $showingArtifacts) {
+            NavigationStack {
+                ArtifactsView()
+            }
+        }
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker(image: $selectedImage, sourceType: .photoLibrary)
+        }
+        .sheet(isPresented: $showingCamera) {
+            ImagePicker(image: $selectedImage, sourceType: .camera)
+        }
+        .overlay(
+            ArtifactSavedNotification(
+                isShowing: $artifactsManager.showArtifactSavedNotification,
+                artifact: artifactsManager.lastSavedArtifact
+            )
+        )
+        .onAppear {
+            greetingText = getRandomGreeting()
+            setupKeyboardObservers()
+        }
+        .onDisappear {
+            removeKeyboardObservers()
+        }
+    }
+
+    @ViewBuilder
+    private func mainContent(geometry: GeometryProxy) -> some View {
+        HStack(spacing: 0) {
+            sidebarContent
+            mainZStackContent(geometry: geometry)
+        }
+    }
+
+    @ViewBuilder
+    private var sidebarContent: some View {
+        let sidebarView = SidebarView(
+            isShowing: $showingSidebar,
+            sessions: historyService.sessions,
+            onSelectSession: { session in
+                loadSession(session)
+            },
+            onDeleteSession: { sessionID in
+                let wasCurrentSession = (sessionID == currentSessionID)
+                historyService.deleteSession(id: sessionID)
+                if wasCurrentSession {
+                    startNewChat()
+                }
+            },
+            onNewChat: {
+                startNewChat()
+            },
+            onShowSettings: {
+                showingSettings = true
+            },
+            onShowArtifacts: {
+                showingArtifacts = true
+            }
+        )
+
+        sidebarView.frame(width: 300)
+    }
+
+    @ViewBuilder
+    private func mainZStackContent(geometry: GeometryProxy) -> some View {
+        ZStack {
+            backgroundLayer(geometry: geometry)
+            contentLayers(geometry: geometry)
+        }
+        .offset(x: showingSidebar ? 0 : -300)
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showingSidebar)
+        .fullScreenCover(isPresented: $showingVoiceSheet) {
+            VoiceChatSheet(messages: messages)
+        } onDismiss: {
+            if liveService.isConnected {
+                liveService.disconnect()
+            }
+        }
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: showScrollToBottomButton)
+    }
+
+    @ViewBuilder
+    private func contentLayers(geometry: GeometryProxy) -> some View {
+        // This will contain the main content layers
+        EmptyView()
+    }
+
+    var body: some View {
+        mainContentView
+            .onChange(of: liveService.userTranscript) { _, newTranscript in
+                if !newTranscript.isEmpty {
+                    messageText = newTranscript
+                    showingGreeting = false
+                }
+            }
+            .onChange(of: liveService.isUserSpeaking) { _, isSpeaking in
+                if !isSpeaking && !messageText.isEmpty && liveService.isConnected {
+                    sendMessage()
+                }
+            }
+            .onChange(of: liveService.aiResponseText) { _, newText in
+                if !newText.isEmpty {
+                    streamingText = newText
+                    isLoading = false
+                }
+            }
+            .onChange(of: liveService.isAISpeaking) { _, isSpeaking in
+                if !isSpeaking && !streamingText.isEmpty && liveService.isConnected {
+                    let aiMessage = Message(text: streamingText, isUser: false)
+                    messages.append(aiMessage)
+                    streamingText = ""
+                    LiveActivityManager.shared.updateActivity(with: "")
+                }
+            }
+            .onChange(of: liveService.isConnected) { _, isConnected in
+                if !isConnected {
+                    LiveActivityManager.shared.endActivity()
+                }
+            }
+            .alert("Connection Error", isPresented: Binding(
+                get: { liveService.errorMessage != nil },
+                set: { if !$0 { liveService.errorMessage = nil } }
+            )) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(liveService.errorMessage ?? "Unknown error")
+            }
+    }
+
+    // MARK: - Functions
+
+    private func getRandomGreeting() -> String {
+            let hour = Calendar.current.component(.hour, from: Date())
+                    sessions: historyService.sessions,
+                    onSelectSession: { session in
+                        loadSession(session)
+                    },
+                    onDeleteSession: { sessionID in
+                        let wasCurrentSession = (sessionID == currentSessionID)
+                        historyService.deleteSession(id: sessionID)
+                        if wasCurrentSession {
+                            startNewChat()
+                        }
+                    },
+                    onNewChat: {
+                        startNewChat()
+                    },
+                    onShowSettings: {
+                        showingSettings = true
+                    },
+                    onShowArtifacts: {
+                        showingArtifacts = true
+                    }
+                )
+
+                sidebarView.frame(width: 300)
+                
+                // Main Content
+                ZStack {
+                    // Dark background with gradient - this layer is behind everything
+                    backgroundLayer(geometry: geometry)
+                    
+                    // Main Content Layers
+                    ZStack(alignment: .top) {
+                        Color.clear
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                isTextFieldFocused = false
+                            }
+                        // Layer 1: Scrollable Content
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                VStack(spacing: 20) {
+                                    if showingGreeting {
+                                        Spacer()
+                                            .frame(height: isTextFieldFocused ? 40 : 100)
+                                        
+                                        VStack(spacing: isTextFieldFocused ? 10 : 20) {
+                                            // Greeting Logo
+                                            let logoSize: CGFloat = isTextFieldFocused ? 80 : 120
+                                            let iconSize: CGFloat = isTextFieldFocused ? 70 : 100
+
+                                            if let uiImage = UIImage(named: "betterlunr.PNG") {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: logoSize, height: logoSize)
+                                            } else {
+                                                Image(systemName: "moon.circle.fill")
+                                                    .font(.system(size: iconSize))
+                                                    .foregroundStyle(.orange)
+                                            }
+                                            
+                                            // Greeting Text
+                                            let greetingFontSize: CGFloat = isTextFieldFocused ? 24 : 32
+                                            Text(greetingText)
+                                                .font(.system(size: greetingFontSize, weight: .regular, design: .serif))
+                                                .foregroundStyle(.white.opacity(0.9))
+                                                .multilineTextAlignment(.center)
+                                                .padding(.horizontal, 40)
+                                        }
+                                        
+                                        Spacer()
+                                    } else {
+                                        // Messages
+                                        ForEach(messages) { message in
+                                            MessageBubble(message: message)
+                                                .id(message.id)
+                                        }
+                                        
+                                        // Streaming message
+                                        if !streamingText.isEmpty {
+                                            MessageBubble(
+                                                message: Message(
+                                                    text: streamingText,
+                                                    isUser: false
+                                                )
+                                            )
+                                            .id("streaming")
+                                        }
+                                        
+                                        // Artifacts Indicator (show when AI is using artifacts)
+                                        if showArtifactsIndicator {
+                                            HStack {
+                                                ArtifactsIndicator()
+                                                    .padding(.horizontal)
+                                                    .transition(.scale.combined(with: .opacity))
+                                                Spacer()
+                                            }
+                                        }
+                                        
+                                        // Loading indicator
+                                        if isLoading && streamingText.isEmpty {
+                                            HStack {
+                                                if isGeneratingImage {
+                                                    // Liquid Glass pill for image generation
+                                                    ImageGenerationIndicator()
+                                                        .padding()
+                                                } else if isAccessingCalendar {
+                                                    // Calendar access indicator
+                                                    CalendarAccessIndicator()
+                                                        .padding()
+                                                } else if isSearchingWeb {
+                                                    // Web search indicator
+                                                    WebSearchIndicator()
+                                                        .padding()
+                                                } else if isAnalyzingImage {
+                                                    // Image analyzing indicator
+                                                    ImageAnalyzingIndicator()
+                                                        .padding()
+                                                } else if isGeneratingTable {
+                                                    TableGenerationIndicator()
+                                                        .padding()
+                                                } else {
+                                                    // Clean minimalist indicator for text generation
+                                                    TextGenerationIndicator()
+                                                        .padding()
+                                                }
+                                                Spacer()
+                                            }
+                                            .padding(.horizontal)
+                                            .id("loading")
+                                        }
+                                        
+                                        // Invisible anchor / Spacer for Input Bar
+                                        Color.clear
+                                            .frame(height: 170)
+                                            .id("bottom")
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 80)
+                                .padding(.bottom, 20)
+                            }
+                            .scrollIndicators(.hidden)
+                            .coordinateSpace(name: "scroll")
+                            .onTapGesture {
+                                isTextFieldFocused = false
+                            }
+                            .onAppear {
+                                scrollProxy = proxy
+                            }
+                            .onChange(of: messages.count) { _, _ in
+                                withAnimation {
+                                    proxy.scrollTo("bottom", anchor: .bottom)
+                                }
+                                isAutoScrollEnabled = true
+                                showScrollToBottomButton = false
+                            }
+                            .onChange(of: streamingText) { oldValue, newValue in
+                                // Only auto-scroll if enabled AND text is actually growing
+                                if isAutoScrollEnabled && !newValue.isEmpty && newValue.count > oldValue.count {
+                                    // Use a small delay to batch scroll updates and reduce jank
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                                        withAnimation(.easeOut(duration: 0.15)) {
+                                            proxy.scrollTo("streaming", anchor: .bottom)
+                                        }
+                                    }
+                                } else if !newValue.isEmpty && !isAutoScrollEnabled {
+                                    showScrollToBottomButton = true
+                                }
+                            }
+                            .onChange(of: isLoading) { _, newValue in
+                                if newValue && isAutoScrollEnabled {
+                                    withAnimation {
+                                        proxy.scrollTo("loading", anchor: .bottom)
+                                    }
+                                }
+                            }
+                            .onChange(of: isGeneratingImage) { _, newValue in
+                                if newValue && isAutoScrollEnabled {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation {
+                                            proxy.scrollTo("loading", anchor: .bottom)
+                                        }
+                                    }
+                                }
+                            }
+                            .onChange(of: isGeneratingTable) { _, newValue in
+                                if newValue && isAutoScrollEnabled {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation {
+                                            proxy.scrollTo("loading", anchor: .bottom)
+                                        }
+                                    }
+                                }
+                            }
+                            .onChange(of: isAccessingCalendar) { _, newValue in
+                                if newValue && isAutoScrollEnabled {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation {
+                                            proxy.scrollTo("loading", anchor: .bottom)
+                                        }
+                                    }
+                                }
+                            }
+                            .onChange(of: isAnalyzingImage) { _, newValue in
+                                if newValue && isAutoScrollEnabled {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation {
+                                            proxy.scrollTo("loading", anchor: .bottom)
+                                        }
+                                    }
+                                }
+                            }
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear
+                                        .preference(key: ScrollOffsetPreferenceKey.self, value: geo.frame(in: .named("scroll")).minY)
+                                }
+                            )
+                            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                                // Detect ANY upward scroll during AI generation
+                                if (isLoading || !streamingText.isEmpty) && isAutoScrollEnabled {
+                                    // If user scrolls up even slightly, disable auto-scroll
+                                    if value > lastContentOffset + 20 {
+                                        isAutoScrollEnabled = false
+                                        showScrollToBottomButton = true
+                                    }
+                                }
+                                lastContentOffset = value
+                            }
+                            .onChange(of: keyboardHeight) { _, newHeight in
+                                if newHeight > 0 && !showingGreeting {
+                                    // Scroll to bottom when keyboard appears
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation(.easeOut(duration: 0.3)) {
+                                            if !streamingText.isEmpty {
+                                                proxy.scrollTo("streaming", anchor: .bottom)
+                                            } else if !messages.isEmpty {
+                                                proxy.scrollTo("bottom", anchor: .bottom)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Layer 2: Static UI Overlay
+                        VStack(spacing: 0) {
+                            // Top Navigation Bar
+                            HStack(spacing: 16) {
+                                Button {
+                                    HapticManager.shared.impact(.light)
+                                    isTextFieldFocused = false
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                        showingSidebar.toggle()
+                                    }
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.title3)
+                                        .foregroundStyle(.white)
+                                        .frame(width: 44, height: 44)
+                                }
+                                .glassEffect(.regular.interactive(), in: .circle)
+                                
+                                Spacer()
+                                
+                                Text("Eclipse")
+                                    .font(.system(size: 20, weight: .medium, design: .serif))
+                                    .foregroundStyle(.white)
+                                
+                                Spacer()
+                                
+                                Button {
+                                    HapticManager.shared.impact(.light)
+                                    isTextFieldFocused = false
+                                    if !showingGreeting {
+                                        startNewChat()
+                                    }
+                                } label: {
+                                    Image(systemName: "plus")
+                                        .font(.title3)
+                                        .foregroundStyle(.white)
+                                        .frame(width: 44, height: 44)
+                                }
+                                .glassEffect(.regular.interactive(), in: .circle)
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 8)
+                            .padding(.bottom, 16)
+                            
+                            Spacer()
+                            
+                            // Scroll to Bottom Button
+                            if showScrollToBottomButton {
+                                HStack {
+                                    Spacer()
+                                    
+                                    Button {
+                                        HapticManager.shared.impact(.light)
+                                        isAutoScrollEnabled = true
+                                        showScrollToBottomButton = false
+                                        
+                                        // Scroll to bottom
+                                        withAnimation(.easeOut(duration: 0.3)) {
+                                            if !streamingText.isEmpty {
+                                                scrollProxy?.scrollTo("streaming", anchor: .bottom)
+                                            } else if !messages.isEmpty {
+                                                scrollProxy?.scrollTo("bottom", anchor: .bottom)
+                                            }
+                                        }
+                                    } label: {
+                                        Image(systemName: "arrow.down")
+                                            .font(.system(size: 18, weight: .semibold))
+                                            .foregroundStyle(.white)
+                                            .frame(width: 48, height: 48)
+                                    }
+                                    .glassEffect(.regular.interactive(), in: .circle)
+                                    .transition(.scale.combined(with: .opacity))
+                                    .padding(.trailing, 20)
+                                    .padding(.bottom, 12)
+                                }
+                            }
+                            
+                            // Bottom Input Area
+                                VStack(spacing: 0) {
+                                    // Image preview
+                                    if let image = selectedImage {
+                                        HStack {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 80, height: 80)
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                .overlay(
+                                                    Button {
+                                                        HapticManager.shared.impact(.light)
+                                                        selectedImage = nil
+                                                    } label: {
+                                                        Image(systemName: "xmark.circle.fill")
+                                                            .font(.system(size: 20))
+                                                            .foregroundStyle(.white)
+                                                            .background(Circle().fill(Color.black.opacity(0.6)))
+                                                    }
+                                                        .offset(x: 6, y: -6),
+                                                    alignment: .topTrailing
+                                                )
+                                                .padding(.leading, 16)
+                                                .padding(.top, 8)
+                                            
+                                            Spacer()
+                                        }
+                                    }
+                                    
+                                    HStack {
+                                        TextField(
+                                            showingGreeting ? "Chat with Eclipse" : "Reply to Eclipse",
+                                            text: $messageText
+                                        )
+                                        .font(.system(size: 17, design: .serif))
+                                        .foregroundStyle(.white)
+                                        .tint(.white)
+                                        .padding(.horizontal, 20)
+                                        .padding(.vertical, 16)
+                                        .focused($isTextFieldFocused)
+                                        .submitLabel(.send)
+                                        .onSubmit {
+                                            sendMessage()
+                                        }
+                                    }
+                                    
+                                    HStack(spacing: 0) {
+                                        Button {
+                                            HapticManager.shared.impact(.light)
+                                            isTextFieldFocused = false
+                                            showingImageSourceMenu = true
+                                        } label: {
+                                            Image(systemName: selectedImage != nil ? "photo.fill" : "plus")
+                                                .font(.system(size: 22, weight: .medium))
+                                                .foregroundStyle(selectedImage != nil ? .orange.opacity(0.9) : .white.opacity(0.7))
+                                                .frame(width: 50, height: 50)
+                                        }
+                                        .confirmationDialog("Add Image", isPresented: $showingImageSourceMenu) {
+                                            Button("Take Photo") {
+                                                showingCamera = true
+                                            }
+                                            Button("Choose from Library") {
+                                                showingImagePicker = true
+                                            }
+                                            Button("Cancel", role: .cancel) { }
+                                        }
+                                        
+                                        Button {
+                                            HapticManager.shared.impact(.light)
+                                            isTextFieldFocused = false
+                                            showingSidebar = true
+                                        } label: {
+                                            Image(systemName: "clock")
+                                                .font(.system(size: 22, weight: .regular))
+                                                .foregroundStyle(.white.opacity(0.7))
+                                                .frame(width: 50, height: 50)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Button {
+                                            HapticManager.shared.impact(.light)
+                                            isTextFieldFocused = false
+                                            if !messageText.isEmpty || selectedImage != nil {
+                                                sendMessage()
+                                            } else {
+                                                // Open Liquid Voice Sheet
+                                                HapticManager.shared.impact(.medium)
+                                                showingVoiceSheet = true
+                                                if !liveService.isConnected {
+                                                    liveService.connect()
+                                                }
+                                            }
+                                        } label: {
+                                            ZStack {
+                                                if liveService.isConnected {
+                                                    // Live Mode Indicator (Active - Red)
+                                                    Circle()
+                                                        .fill(Color.red)
+                                                        .frame(width: 46, height: 46)
+                                                    
+                                                    Image(systemName: "waveform")
+                                                        .font(.system(size: 20, weight: .medium))
+                                                        .foregroundStyle(.white)
+                                                } else {
+                                                    // Standard Send/Live Button
+                                                    let isEmptyState = messageText.isEmpty && selectedImage == nil
+                                                    let iconName = isEmptyState ? "waveform" : "arrow.up"
+                                                    let backgroundColor = isEmptyState ? Color.white.opacity(0.9) : Color.white
+
+                                                    Image(systemName: iconName)
+                                                        .font(.system(size: 20, weight: .medium))
+                                                        .foregroundStyle(.black)
+                                                        .frame(width: 46, height: 46)
+                                                        .background(Circle().fill(backgroundColor))
+                                                }
+                                            }
+                                        }
+                                        .disabled(isLoading)
+                                        .padding(.trailing, 4)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                }
+                                .glassEffect(.regular, in: .rect(cornerRadius: 28))
+                                .padding(.horizontal, 16)
+                                .padding(.bottom, 0)
+                        }
+                        
+                        if showingSidebar {
+                            Color.black.opacity(0.001)
+                                .scaleEffect(1.2)
+                                .onTapGesture {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                        showingSidebar = false
+                                    }
+                                }
+                        }
+                    }
+                    .frame(width: geometry.size.width)
+                    .clipShape(RoundedRectangle(cornerRadius: showingSidebar ? 40 : 0))
+                    .shadow(color: .black.opacity(0.5), radius: showingSidebar ? 30 : 0)
+                }
+                .offset(x: showingSidebar ? 0 : -300)
+                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showingSidebar)
+                .fullScreenCover(isPresented: $showingVoiceSheet) {
+                    VoiceChatSheet(messages: messages)
+                } onDismiss: {
+                    // Disconnect the live service when the voice sheet is dismissed
+                    if liveService.isConnected {
+                        liveService.disconnect()
+                    }
+                }
+                .animation(.spring(response: 0.35, dampingFraction: 0.8), value: showScrollToBottomButton)
+            }
+            .background(Color(red: 0.08, green: 0.08, blue: 0.08).ignoresSafeArea())
+            .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isTextFieldFocused)
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
+            }
+            .sheet(isPresented: $showingArtifacts) {
+                NavigationStack {
+                    ArtifactsView()
+                }
+            }
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(image: $selectedImage, sourceType: .photoLibrary)
+            }
+            .sheet(isPresented: $showingCamera) {
+                ImagePicker(image: $selectedImage, sourceType: .camera)
+            }
+            .overlay(
+                ArtifactSavedNotification(
+                    isShowing: $artifactsManager.showArtifactSavedNotification,
+                    artifact: artifactsManager.lastSavedArtifact
+                )
+            )
+            .onAppear {
+                greetingText = getRandomGreeting()
+                setupKeyboardObservers()
+            }
+            .onDisappear {
+                removeKeyboardObservers()
+            }
+            // Voice Chat Integration
+            .onChange(of: liveService.userTranscript) { _, newTranscript in
+                if !newTranscript.isEmpty {
+                    messageText = newTranscript
+                    showingGreeting = false // Switch to chat view immediately
+                }
+            }
+            .onChange(of: liveService.isUserSpeaking) { _, isSpeaking in
+                if !isSpeaking && !messageText.isEmpty && liveService.isConnected {
+                    // User finished speaking -> Send message (UI update only)
+                    sendMessage()
+                }
+            }
+            .onChange(of: liveService.aiResponseText) { _, newText in
+                if !newText.isEmpty {
+                    streamingText = newText
+                    isLoading = false // Ensure loading indicator is hidden
+                }
+            }
+            .onChange(of: liveService.isAISpeaking) { _, isSpeaking in
+                if !isSpeaking && !streamingText.isEmpty && liveService.isConnected {
+                    // AI finished speaking -> Commit message
+                    let aiMessage = Message(text: streamingText, isUser: false)
+                    messages.append(aiMessage)
+                    streamingText = "" // Reset for next turn
+                    saveCurrentSession()
+                }
+            }
+            .onChange(of: liveService.errorMessage) { old, new in
+                // Trigger alert (handled by binding)
+            }
+            .alert("Live Error", isPresented: Binding<Bool>(
+                get: { liveService.errorMessage != nil },
+                set: { if !$0 { liveService.errorMessage = nil } }
+            )) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(liveService.errorMessage ?? "Unknown error")
+            }
+        }
+    }
+    
+    // MARK: - Functions
+    
+    private func getRandomGreeting() -> String {
+            let hour = Calendar.current.component(.hour, from: Date())
+            
+            let greetings: [String]
+            switch hour {
+            case 5..<12:
+                greetings = morningGreetings
+            case 12..<17:
+                greetings = afternoonGreetings
+            case 17..<22:
+                greetings = eveningGreetings
+            default:
+                greetings = nightGreetings
+            }
+            
+            return greetings.randomElement() ?? "Hello!\nHow can I help you today?"
+        }
+        
+        private func sendMessage() {
+            let userMessage = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+            let imageToSend = selectedImage
+            
+            guard (!userMessage.isEmpty || imageToSend != nil), !isLoading else { return }
+            
+            isTextFieldFocused = false
+            
+            // Add user message with image if present
+            if let image = imageToSend, let imageData = image.jpegData(compressionQuality: 0.8) {
+                let message = Message(text: userMessage.isEmpty ? "" : userMessage, isUser: true, images: [imageData])
+                messages.append(message)
+            } else {
+                let message = Message(text: userMessage, isUser: true)
+                messages.append(message)
+            }
+            
+            // Detect and save important information as artifacts
+            if !userMessage.isEmpty {
+                Task {
+                    await artifactsManager.detectAndSaveImportantInfo(from: userMessage)
+                }
+            }
+            
+            messageText = ""
+            selectedImage = nil
+            showingGreeting = false
+            
+            // Start Live Activity immediately while app is in foreground
+            if imageToSend != nil {
+                LiveActivityManager.shared.startActivity(withStatus: "Analyzing Image...")
+            } else {
+                let lowerMessage = userMessage.lowercased()
+                let imageTriggerPrefixes = ["generate image", "create image", "make an image", "draw", "/image", "generate an image", "create an image"]
+                if imageTriggerPrefixes.contains(where: { lowerMessage.hasPrefix($0) }) {
+                    LiveActivityManager.shared.startActivity(withStatus: "Generating Image...")
+                } else {
+                    LiveActivityManager.shared.startActivity(withStatus: "Thinking...")
+                }
+            }
+            
+            // If in Live Mode, we only update the UI history, we DO NOT send to REST API
+            if liveService.isConnected {
+                // Live service already handles the audio I/O
+                // We just clear the input (done above) and return
+                // Ensure we clear the transcript in service so it doesn't re-trigger
+                // Note: Service transcript is replaced on next speech, but good to be clean
+                return
+            }
+            
+            isLoading = true
+            streamingText = ""
+            
+            // Reset auto-scroll for new message
+            isAutoScrollEnabled = true
+            showScrollToBottomButton = false
+            
+            // Get conversation history (exclude the just-added user message)
+            let historyCount = messages.count - 1
+            let conversationHistory = historyCount > 0 ? Array(messages.prefix(historyCount)) : []
+            
+            Task {
+                await processMessage(userMessage: userMessage, imageToSend: imageToSend, conversationHistory: conversationHistory)
+            }
+        }
+        
+        private func processMessage(userMessage: String, imageToSend: UIImage?, conversationHistory: [Message]) async {
+            do {
+                // Check if we have an image to analyze
+                if let image = imageToSend {
+                    await MainActor.run {
+                        isAnalyzingImage = true
+                    }
+                    
+                    let prompt = userMessage.isEmpty ? "Analyze this image in detail." : userMessage
+                    
+                    for try await chunk in geminiService.analyzeImageStream(image, prompt: prompt, conversationHistory: conversationHistory) {
+                        await MainActor.run {
+                            streamingText += chunk
+                        }
+                    }
+                    
+                    await MainActor.run {
+                        isLoading = false
+                        isAnalyzingImage = false
+                        let aiMessage = Message(text: streamingText, isUser: false)
+                        messages.append(aiMessage)
+                        streamingText = ""
+                        saveCurrentSession()
+                    }
+                } else {
+                    // Check for image generation intent
+                    if isImageGenerationInternal(userMessage) {
+                        await MainActor.run {
+                            isGeneratingImage = true
+                        }
+                        
+                        let prompt = extractImagePrompt(from: userMessage)
+                        let images = try await geminiService.generateImage(prompt: prompt, numberOfImages: 1)
+                        
+                        await MainActor.run {
+                            isLoading = false
+                            isGeneratingImage = false
+                            let aiMessage = Message(text: "Here is your generated image:", isUser: false, images: images)
+                            messages.append(aiMessage)
+                            saveCurrentSession()
+                        }
+                    } else {
+                        await MainActor.run {
+                            isGeneratingImage = false
+                        }
+                        
+                        // Check for web search intent
+                        var messageToSend = userMessage
+                        if webSearchService.shouldPerformWebSearch(for: userMessage) {
+                            await MainActor.run {
+                                isSearchingWeb = true
+                            }
+                            
+                            do {
+                                let searchResults = try await webSearchService.search(query: userMessage)
+                                messageToSend += "\n\n[Web Search Results:\n\(searchResults)]"
+                                print("✅ Web search completed successfully")
+                                
+                                // Keep the indicator visible for a moment so user sees it completed
+                                try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+                            } catch {
+                                print("❌ Web search failed: \(error.localizedDescription)")
+                                // Continue without search results
+                            }
+                            
+                            await MainActor.run {
+                                isSearchingWeb = false
+                            }
+                        }
+                        
+                        // Check for calendar intent
+                        if isCalendarEnabled && isCalendarIntentInternal(userMessage) {
+                            await MainActor.run {
+                                isAccessingCalendar = true
+                            }
+                            let events = CalendarManager.shared.getUpcomingEvents()
+                            let eventString: String
+                            if events.isEmpty {
+                                eventString = "No upcoming events found."
+                            } else {
+                                let eventDescriptions = events.map { "\($0.title ?? "Event"): \($0.startDate.formatted())" }
+                                eventString = eventDescriptions.joined(separator: "\n")
+                            }
+                            messageToSend += "\n\n[System Info: User's Upcoming Calendar Events:\n\(eventString)]"
+                            
+                            // Short delay to show the indicator interaction
+                            try? await Task.sleep(nanoseconds: 1_000_000_000)
+                        }
+                        
+                        if isTableIntentInternal(userMessage) {
+                            await MainActor.run {
+                                isGeneratingTable = true
+                            }
+                        }
+                        
+                        // Extract first name for AI context
+                        let fullName = AuthManager.shared.userName
+                        let firstName = fullName.components(separatedBy: " ").first ?? fullName
+                        
+                        // Show artifacts indicator only if:
+                        // 1. We have artifacts saved
+                        // 2. The user is asking about their personal information
+                        let hasArtifacts = !artifactsManager.artifacts.isEmpty
+                        let isAskingAboutPersonalInfo = isAskingAboutArtifacts(userMessage)
+                        
+                        if hasArtifacts && isAskingAboutPersonalInfo {
+                            await MainActor.run {
+                                showArtifactsIndicator = true
+                            }
+                            // Show for 2 seconds before streaming starts
+                            try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        }
+                        
+                        for try await chunk in geminiService.sendMessageStream(messageToSend, conversationHistory: conversationHistory, userName: firstName) {
+                            await MainActor.run {
+                                streamingText += chunk
+                                isAccessingCalendar = false // Hide indicator once streaming starts
+                                isSearchingWeb = false // Hide search indicator once streaming
+                                showArtifactsIndicator = false // Hide artifacts indicator once streaming
+                            }
+                        }
+                        
+                        await MainActor.run {
+                            isLoading = false
+                            isGeneratingTable = false
+                            isAccessingCalendar = false
+                            isSearchingWeb = false
+                            showArtifactsIndicator = false
+                            
+                            // Process calendar event creation if present in response
+                            processCalendarEventCreation(from: streamingText)
+                            
+                            let aiMessage = Message(text: streamingText, isUser: false)
+                            messages.append(aiMessage)
+                            streamingText = ""
+                            
+                            saveCurrentSession()
+                        }
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    isLoading = false
+                    isGeneratingImage = false
+                    isAnalyzingImage = false
+                    isGeneratingTable = false
+                    streamingText = ""
+                    let errorMessage = Message(
+                        text: "Sorry, I encountered an error: \(error.localizedDescription)",
+                        isUser: false
+                    )
+                    messages.append(errorMessage)
+                    saveCurrentSession()
+                }
+            }
+        }
+        
+        // MARK: - Helper Methods
+        
+        private func isImageGenerationInternal(_ message: String) -> Bool {
+            let lowerMessage = message.lowercased()
+            return Self.imageTriggerPrefixes.contains(where: { lowerMessage.hasPrefix($0) })
+        }
+        
+        private func extractImagePrompt(from message: String) -> String {
+            var prompt = message
+            for prefix in Self.imageTriggerPrefixes {
+                if message.lowercased().hasPrefix(prefix) {
+                    prompt = String(message.dropFirst(prefix.count))
+                    break
+                }
+            }
+            
+            // Further cleanup
+            prompt = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
+            if prompt.lowercased().hasPrefix("of ") {
+                prompt = String(prompt.dropFirst(3)).trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            return prompt
+        }
+        
+        private func isCalendarIntentInternal(_ message: String) -> Bool {
+            let lowerMessage = message.lowercased()
+            return Self.calendarKeywords.contains(where: { lowerMessage.contains($0) })
+        }
+        
+        private func isTableIntentInternal(_ message: String) -> Bool {
+            let lowerMessage = message.lowercased()
+            return Self.tableKeywords.contains(where: { lowerMessage.contains($0) })
+        }
+        
+        private func isAskingAboutArtifacts(_ message: String) -> Bool {
+            let lowerMessage = message.lowercased()
+            return Self.artifactsKeywords.contains(where: { lowerMessage.contains($0) })
+        }
+        
+        private func processCalendarEventCreation(from text: String) {
+            // Look for calendar event pattern: CALENDAR_EVENT: [title] | [date/time]
+            let pattern = #"CALENDAR_EVENT:\s*(.+?)\s*\|\s*(.+?)(?:\n|$)"#
+            
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+                return
+            }
+            
+            let nsString = text as NSString
+            let matches = regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsString.length))
+            
+            for match in matches {
+                if match.numberOfRanges == 3 {
+                    let titleRange = match.range(at: 1)
+                    let dateRange = match.range(at: 2)
+                    
+                    let title = nsString.substring(with: titleRange).trimmingCharacters(in: .whitespacesAndNewlines)
+                    let dateDescription = nsString.substring(with: dateRange).trimmingCharacters(in: .whitespacesAndNewlines)
+                    
+                    print("📅 Detected calendar event - Title: \(title), Date: \(dateDescription)")
+                    
+                    // Parse the date
+                    if let eventDate = CalendarManager.shared.parseDateTime(from: dateDescription) {
+                        Task {
+                            let success = await CalendarManager.shared.addEvent(
+                                title: title,
+                                date: eventDate,
+                                durationSeconds: 3600,
+                                notes: "Created by Eclipse AI"
+                            )
+                            
+                            if success {
+                                print("✅ Calendar event created successfully")
+                                await MainActor.run {
+                                    HapticManager.shared.notification(.success)
+                                }
+                            } else {
+                                print("❌ Failed to create calendar event")
+                            }
+                        }
+                    } else {
+                        print("⚠️ Could not parse date: \(dateDescription)")
+                    }
+                }
+            }
+        }
+        
+        private func startNewChat() {
+            currentSessionID = UUID()
+            messages.removeAll()
+            messageText = ""
+            streamingText = ""
+            showingGreeting = true
+            isTextFieldFocused = false
+            showingSidebar = false
+            greetingText = getRandomGreeting()
+        }
+        
+        private func saveCurrentSession() {
+            guard !messages.isEmpty else { return }
+            
+            Task {
+                // Generate AI title if we have at least 2 messages (one from user, one from AI)
+                var title: String
+                if messages.count >= 2 {
+                    do {
+                        title = try await geminiService.generateChatTitle(from: messages)
+                        // Limit title length
+                        if title.count > 60 {
+                            title = String(title.prefix(57)) + "..."
+                        }
+                    } catch {
+                        // Fallback to first user message if title generation fails
+                        let firstUserMessage = messages.first(where: { $0.isUser })?.text ?? "New conversation"
+                        title = String(firstUserMessage.prefix(50))
+                    }
+                } else {
+                    // Use first message as title for new conversations
+                    let firstUserMessage = messages.first(where: { $0.isUser })?.text ?? "New conversation"
+                    title = String(firstUserMessage.prefix(50))
+                }
+                
+                let preview = messages.last?.text.prefix(100).description ?? ""
+                
+                await MainActor.run {
+                    historyService.saveSession(
+                        id: currentSessionID,
+                        title: title,
+                        preview: preview,
+                        messages: messages
+                    )
+                }
+            }
+        }
+        
+        private func loadSession(_ session: ChatSession) {
+            currentSessionID = session.id
+            messages = session.messages
+            showingGreeting = false
+            showingSidebar = false
+        }
+        
+        private func setupKeyboardObservers() {
+            NotificationCenter.default.addObserver(
+                forName: UIResponder.keyboardWillShowNotification,
+                object: nil,
+                queue: .main
+            ) { notification in
+                guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+                
+                withAnimation(.easeOut(duration: 0.3)) {
+                    keyboardHeight = keyboardFrame.height
+                }
+            }
+            
+            NotificationCenter.default.addObserver(
+                forName: UIResponder.keyboardWillHideNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                withAnimation(.easeOut(duration: 0.3)) {
+                    keyboardHeight = 0
+                }
+            }
+        }
+        
+        private func removeKeyboardObservers() {
+            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        }
+    }
+    
+    // MARK: - Sidebar View
+    
+    enum SidebarMode {
+        case main
+        case chats
+        case projects
+        case profile
+    }
+    
+    struct SidebarView: View {
+        @Binding var isShowing: Bool
+        @StateObject private var authManager = AuthManager.shared
+        @State private var currentMode: SidebarMode = .main
+        let sessions: [ChatSession]
+        let onSelectSession: (ChatSession) -> Void
+        let onDeleteSession: (UUID) -> Void
+        let onNewChat: () -> Void
+        let onShowSettings: () -> Void
+        let onShowArtifacts: () -> Void
+        
+        var body: some View {
+            ZStack {
+                Color(red: 0.08, green: 0.08, blue: 0.08)
+                    .ignoresSafeArea()
+                
+                Group {
+                    switch currentMode {
+                    case .main:
+                        MainSidebarView(
+                            currentMode: $currentMode,
+                            sessions: sessions,
+                            onSelectSession: onSelectSession,
+                            onDeleteSession: onDeleteSession,
+                            onNewChat: onNewChat,
+                            onShowSettings: onShowSettings,
+                            onShowArtifacts: onShowArtifacts
+                        )
+                    case .chats:
+                        ChatsListView(
+                            currentMode: $currentMode,
+                            isShowing: $isShowing,
+                            sessions: sessions,
+                            onSelectSession: onSelectSession,
+                            onDeleteSession: onDeleteSession
+                        )
+                    case .projects:
+                        ProjectsView(
+                            currentMode: $currentMode
+                        )
+                    case .profile:
+                        SidebarProfileView(
+                            currentMode: $currentMode
+                        )
+                    }
+                }
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
+            }
+            .frame(width: 300)
+            .animation(.spring(response: 0.4, dampingFraction: 0.85), value: currentMode)
+        }
+    }
+    
+    // MARK: - Main Sidebar View
+    
+    struct MainSidebarView: View {
+        @Binding var currentMode: SidebarMode
+        @StateObject private var authManager = AuthManager.shared
+        let sessions: [ChatSession]
+        let onSelectSession: (ChatSession) -> Void
+        let onDeleteSession: (UUID) -> Void
+        let onNewChat: () -> Void
+        let onShowSettings: () -> Void
+        let onShowArtifacts: () -> Void
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                Text("Eclipse")
+                    .font(.system(size: 38, weight: .semibold, design: .serif))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 64)
+                    .padding(.bottom, 24)
+                
+                // Navigation Items
+                VStack(alignment: .leading, spacing: 2) {
+                    Button {
+                        HapticManager.shared.impact(.light)
+                        withAnimation {
+                            currentMode = .chats
+                        }
+                    } label: {
+                        NavigationItem(icon: "bubble.left", title: "Chats", isSelected: false)
+                    }
+                    
+                    Button {
+                        HapticManager.shared.impact(.light)
+                        withAnimation {
+                            currentMode = .projects
+                        }
+                    } label: {
+                        NavigationItem(icon: "shippingbox", title: "Projects", isSelected: false)
+                    }
+                    
+                    Button {
+                        HapticManager.shared.impact(.light)
+                        onShowArtifacts()
+                    } label: {
+                        NavigationItem(icon: "brain", title: "Artifacts", isSelected: false)
+                    }
+                    
+                    NavigationItem(icon: "chevron.left.forwardslash.chevron.right", title: "Code", isSelected: false)
+                }
+                .padding(.horizontal, 8)
+                .padding(.bottom, 24)
+                
+                // Recents Section
+                HStack {
+                    Text("Recents")
+                        .font(.system(size: 13, weight: .regular))
+                        .foregroundStyle(.gray)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 8)
+                    Spacer()
+                }
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        if sessions.isEmpty {
+                            Text("No conversations yet")
+                                .font(.system(size: 15))
+                                .foregroundStyle(.white.opacity(0.4))
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 20)
+                        } else {
+                            ForEach(sessions) { session in
+                                SessionItem(
+                                    session: session,
+                                    onSelect: { onSelectSession(session) },
+                                    onDelete: { onDeleteSession(session.id) }
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                // Bottom Bar
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        // User Profile Pill
+                        Button {
+                            HapticManager.shared.impact(.light)
+                            onShowSettings()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Group {
+                                    if let photoURL = authManager.userPhotoURL {
+                                        AsyncImage(url: photoURL) { phase in
+                                            switch phase {
+                                            case .empty:
+                                                Circle()
+                                                    .fill(Color.white.opacity(0.1))
+                                                    .frame(width: 32, height: 32)
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 32, height: 32)
+                                                    .clipShape(Circle())
+                                            case .failure:
+                                                Circle()
+                                                    .fill(Color.white.opacity(0.1))
+                                                    .frame(width: 32, height: 32)
+                                                    .overlay(
+                                                        Text(authManager.userInitial)
+                                                            .font(.system(size: 14, weight: .medium))
+                                                            .foregroundStyle(.white)
+                                                    )
+                                            @unknown default:
+                                                Circle()
+                                                    .fill(Color.white.opacity(0.1))
+                                                    .frame(width: 32, height: 32)
+                                            }
+                                        }
+                                    } else {
+                                        Circle()
+                                            .fill(Color.white.opacity(0.1))
+                                            .frame(width: 32, height: 32)
+                                            .overlay(
+                                                Text(authManager.userInitial)
+                                                    .font(.system(size: 14, weight: .medium))
+                                                    .foregroundStyle(.white)
+                                            )
+                                    }
+                                }
+                                
+                                Text(authManager.userName)
+                                    .font(.system(size: 15, weight: .regular))
+                                    .foregroundStyle(.white)
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .glassEffect(.regular, in: .capsule)
+                        }
+                        
+                        Spacer()
+                        
+                        // New Chat Button
+                        Button {
+                            HapticManager.shared.impact(.medium)
+                            onNewChat()
+                        } label: {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Color(red: 0.85, green: 0.45, blue: 0.25), Color(red: 0.75, green: 0.35, blue: 0.15)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 50, height: 50)
+                                .overlay(
+                                    Image(systemName: "plus.message.fill")
+                                        .font(.system(size: 20, weight: .medium))
+                                        .foregroundStyle(.white)
+                                )
+                                .shadow(color: Color(red: 0.85, green: 0.45, blue: 0.25).opacity(0.4), radius: 8, x: 0, y: 4)
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+            }
+        }
+    }
+    
+    // MARK: - Chats List View
+    
+    struct ChatsListView: View {
+        @Binding var currentMode: SidebarMode
+        @Binding var isShowing: Bool
+        let sessions: [ChatSession]
+        let onSelectSession: (ChatSession) -> Void
+        let onDeleteSession: (UUID) -> Void
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                headerView
+                chatsScrollView
+            }
+        }
+        
+        private var headerView: some View {
+            HStack(spacing: 16) {
+                Button {
+                    HapticManager.shared.impact(.light)
+                    withAnimation {
+                        currentMode = .main
+                    }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                }
+                .glassEffect(.regular.interactive(), in: .circle)
+                
+                Text("All Chats")
+                    .font(.system(size: 28, weight: .semibold, design: .serif))
+                    .foregroundStyle(.white)
+                
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 64)
+            .padding(.bottom, 24)
+        }
+        
+        private var chatsScrollView: some View {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 8) {
+                    if sessions.isEmpty {
+                        emptyStateView
+                    } else {
+                        chatsListView
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+        }
+        
+        private var emptyStateView: some View {
+            VStack(spacing: 16) {
+                Image(systemName: "bubble.left.and.bubble.right")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .padding(.top, 60)
+                
+                Text("No conversations yet")
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.6))
+                
+                Text("Start a new chat to begin")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white.opacity(0.4))
+            }
+            .frame(maxWidth: .infinity)
+        }
+        
+        private var chatsListView: some View {
+            ForEach(Array(sessions.enumerated()), id: \.element.id) { index, session in
+                ChatRowView(
+                    session: session,
+                    onSelect: {
+                        HapticManager.shared.impact(.light)
+                        onSelectSession(session)
+                        withAnimation {
+                            isShowing = false
+                        }
+                    },
+                    onDelete: {
+                        onDeleteSession(session.id)
+                    }
+                )
+            }
+        }
+    }
+    
+    // MARK: - Chat Row View
+    
+    struct ChatRowView: View {
+        let session: ChatSession
+        let onSelect: () -> Void
+        let onDelete: () -> Void
+        
+        var body: some View {
+            Button {
+                onSelect()
+            } label: {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(session.title)
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                    
+                    Text(session.preview)
+                        .font(.system(size: 15, design: .serif))
+                        .foregroundStyle(.white.opacity(0.6))
+                        .lineLimit(2)
+                    
+                    Text(session.date, style: .relative)
+                        .font(.system(size: 13, design: .serif))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(Color.white.opacity(0.05))
+                .cornerRadius(12)
+            }
+            .contextMenu {
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Projects View
+    
+    struct ProjectsView: View {
+        @Binding var currentMode: SidebarMode
+        @State private var projects: [Project] = []
+        @State private var showingCreateProject = false
+        @State private var newProjectName = ""
+        @State private var newProjectDescription = ""
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header with back button
+                HStack(spacing: 16) {
+                    Button {
+                        HapticManager.shared.impact(.light)
+                        withAnimation {
+                            currentMode = .main
+                        }
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 40, height: 40)
+                    }
+                    .glassEffect(.regular.interactive(), in: .circle)
+                    
+                    Text("Projects")
+                        .font(.system(size: 28, weight: .semibold, design: .serif))
+                        .foregroundStyle(.white)
+                    
+                    Spacer()
+                    
+                    Button {
+                        HapticManager.shared.impact(.light)
+                        showingCreateProject = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 40, height: 40)
+                    }
+                    .glassEffect(.regular.interactive(), in: .circle)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 64)
+                .padding(.bottom, 24)
+                
+                // Projects List
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 12) {
+                        if projects.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "shippingbox")
+                                    .font(.system(size: 48))
+                                    .foregroundStyle(.orange.opacity(0.8))
+                                    .padding(.top, 60)
+                                
+                                Text("No projects yet")
+                                    .font(.system(size: 17, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.6))
+                                
+                                Text("Create a project to organize your work")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(.white.opacity(0.4))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
+                                
+                                Button {
+                                    HapticManager.shared.impact(.medium)
+                                    showingCreateProject = true
+                                } label: {
+                                    HStack(spacing: 8) {
+                                        Image(systemName: "plus")
+                                            .font(.system(size: 16, weight: .semibold))
+                                        Text("Create Project")
+                                            .font(.system(size: 16, weight: .semibold))
+                                    }
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 24)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        LinearGradient(
+                                            colors: [.orange, Color(red: 0.9, green: 0.5, blue: 0.3)],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .cornerRadius(20)
+                                    .shadow(color: .orange.opacity(0.4), radius: 12, x: 0, y: 6)
+                                }
+                                .padding(.top, 8)
+                            }
+                            .frame(maxWidth: .infinity)
+                        } else {
+                            ForEach(projects) { project in
+                                ProjectCard(project: project)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
+            }
+            .sheet(isPresented: $showingCreateProject) {
+                CreateProjectSheet(
+                    projectName: $newProjectName,
+                    projectDescription: $newProjectDescription,
+                    onSave: {
+                        let newProject = Project(
+                            name: newProjectName,
+                            description: newProjectDescription,
+                            createdAt: Date()
+                        )
+                        projects.append(newProject)
+                        newProjectName = ""
+                        newProjectDescription = ""
+                        showingCreateProject = false
+                    }
+                )
+            }
+        }
+    }
+    
+    // MARK: - Sidebar Profile View
+    
+    struct SidebarProfileView: View {
+        @Binding var currentMode: SidebarMode
+        @StateObject private var authManager = AuthManager.shared
+        @State private var showingSignOutAlert = false
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header with back button
+                HStack(spacing: 16) {
+                    Button {
+                        HapticManager.shared.impact(.light)
+                        withAnimation {
+                            currentMode = .main
+                        }
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 40, height: 40)
+                    }
+                    .glassEffect(.regular.interactive(), in: .circle)
+                    
+                    Text("Profile")
+                        .font(.system(size: 28, weight: .semibold, design: .serif))
+                        .foregroundStyle(.white)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 64)
+                .padding(.bottom, 32)
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 24) {
+                        // Profile Picture & Name
+                        VStack(spacing: 16) {
+                            Group {
+                                if let photoURL = authManager.userPhotoURL {
+                                    AsyncImage(url: photoURL) { phase in
+                                        switch phase {
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 80, height: 80)
+                                                .clipShape(Circle())
+                                        default:
+                                            Circle()
+                                                .fill(Color.white.opacity(0.1))
+                                                .frame(width: 80, height: 80)
+                                                .overlay(
+                                                    Text(authManager.userInitial)
+                                                        .font(.system(size: 32, weight: .semibold))
+                                                        .foregroundStyle(.white)
+                                                )
+                                        }
+                                    }
+                                } else {
+                                    Circle()
+                                        .fill(Color.white.opacity(0.1))
+                                        .frame(width: 80, height: 80)
+                                        .overlay(
+                                            Text(authManager.userInitial)
+                                                .font(.system(size: 32, weight: .semibold))
+                                                .foregroundStyle(.white)
+                                        )
+                                }
+                            }
+                            .shadow(color: .orange.opacity(0.3), radius: 20, x: 0, y: 10)
+                            
+                            VStack(spacing: 4) {
+                                Text(authManager.userName)
+                                    .font(.system(size: 22, weight: .semibold))
+                                    .foregroundStyle(.white)
+                                
+                                Text(authManager.userEmail)
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(.white.opacity(0.6))
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 24)
+                        
+                        // Account Info
+                        VStack(spacing: 12) {
+                            ProfileInfoRow(
+                                icon: "envelope.fill",
+                                title: "Email",
+                                value: authManager.userEmail
+                            )
+                            
+                            ProfileInfoRow(
+                                icon: "person.fill",
+                                title: "Display Name",
+                                value: authManager.userName
+                            )
+                            
+                            ProfileInfoRow(
+                                icon: "key.fill",
+                                title: "Account Type",
+                                value: authManager.userPhotoURL != nil ? "Google" : "Email"
+                            )
+                        }
+                        .padding(.horizontal, 16)
+                        
+                        // Sign Out Button
+                        Button {
+                            HapticManager.shared.impact(.medium)
+                            showingSignOutAlert = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .font(.system(size: 18, weight: .medium))
+                                Text("Sign Out")
+                                    .font(.system(size: 17, weight: .semibold))
+                            }
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.red.opacity(0.2))
+                            .cornerRadius(12)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                    }
+                }
+            }
+            .alert("Sign Out", isPresented: $showingSignOutAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Sign Out", role: .destructive) {
+                    authManager.signOut()
+                }
+            } message: {
+                Text("Are you sure you want to sign out?")
+            }
+        }
+    }
+    
+    // MARK: - Supporting Views
+    
+    struct ProfileInfoRow: View {
+        let icon: String
+        let title: String
+        let value: String
+        
+        var body: some View {
+            HStack(spacing: 16) {
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundStyle(.orange)
+                    .frame(width: 24)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.system(size: 13))
+                        .foregroundStyle(.white.opacity(0.6))
+                    
+                    Text(value)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.white)
+                }
+                
+                Spacer()
+            }
+            .padding(16)
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(12)
+        }
+    }
+    
+    struct ProjectCard: View {
+        let project: Project
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "shippingbox.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.orange)
+                    
+                    Spacer()
+                    
+                    Text(project.createdAt, style: .relative)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+                
+                Text(project.name)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(.white)
+                
+                if !project.description.isEmpty {
+                    Text(project.description)
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white.opacity(0.6))
+                        .lineLimit(2)
+                }
+            }
+            .padding(16)
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(16)
+        }
+    }
+    
+    struct CreateProjectSheet: View {
+        @Environment(\.dismiss) private var dismiss
+        @Binding var projectName: String
+        @Binding var projectDescription: String
+        let onSave: () -> Void
+        
+        var body: some View {
+            NavigationView {
+                ZStack {
+                    Color(red: 0.11, green: 0.11, blue: 0.11)
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 24) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Project Name")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.white.opacity(0.8))
+                            
+                            TextField("", text: $projectName)
+                                .font(.system(size: 17))
+                                .foregroundStyle(.white)
+                                .padding(16)
+                                .background(Color.white.opacity(0.05))
+                                .cornerRadius(12)
+                                .placeholder(when: projectName.isEmpty) {
+                                    Text("My Awesome Project")
+                                        .foregroundStyle(.white.opacity(0.4))
+                                        .padding(.leading, 16)
+                                }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Description")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.white.opacity(0.8))
+                            
+                            TextField("", text: $projectDescription, axis: .vertical)
+                                .font(.system(size: 17))
+                                .foregroundStyle(.white)
+                                .lineLimit(4...6)
+                                .padding(16)
+                                .background(Color.white.opacity(0.05))
+                                .cornerRadius(12)
+                                .placeholder(when: projectDescription.isEmpty) {
+                                    Text("What's this project about?")
+                                        .foregroundStyle(.white.opacity(0.4))
+                                        .padding(.leading, 16)
+                                        .padding(.top, 16)
+                                }
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding(24)
+                }
+                .navigationTitle("New Project")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .foregroundStyle(.white)
+                    }
+                    
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Create") {
+                            HapticManager.shared.impact(.medium)
+                            onSave()
+                        }
+                        .foregroundStyle(.orange)
+                        .disabled(projectName.isEmpty)
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - Project Model
+    
+    struct Project: Identifiable {
+        let id = UUID()
+        let name: String
+        let description: String
+        let createdAt: Date
+    }
+    // MARK: - Session Item
+    
+    struct SessionItem: View {
+        let session: ChatSession
+        let onSelect: () -> Void
+        let onDelete: () -> Void
+        @State private var isHovering = false
+        
+        var body: some View {
+            Button {
+                HapticManager.shared.impact(.light)
+                onSelect()
+            } label: {
+                HStack(spacing: 0) {
+                    Text(session.title)
+                        .font(.system(size: 15))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.white.opacity(isHovering ? 0.05 : 0))
+                )
+            }
+            .buttonStyle(.plain)
+            .contextMenu {
+                Button(role: .destructive) {
+                    HapticManager.shared.notification(.warning)
+                    onDelete()
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Navigation Item
+    
+    struct NavigationItem: View {
+        let icon: String
+        let title: String
+        var isSelected: Bool = false
+        
+        var body: some View {
+            HStack(spacing: 14) {
+                Image(systemName: icon)
+                    .font(.system(size: 18, weight: .regular))
+                    .foregroundStyle(isSelected ? .white : .white.opacity(0.6))
+                    .frame(width: 22)
+                
+                Text(title)
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundStyle(isSelected ? .white : .white.opacity(0.6))
+                
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(isSelected ? Color.white.opacity(0.08) : Color.clear)
+            )
+            .contentShape(Rectangle())
+        }
+    }
+
+// MARK: - Message Bubble View
+
+struct MessageBubble: View {
+        let message: Message
+        @State private var showingSaveSuccess = false
+        
+        var body: some View {
+            HStack(alignment: .top, spacing: 12) {
+                if message.isUser {
+                    Spacer()
+                    
+                    if let images = message.images, !images.isEmpty {
+                        VStack(spacing: 8) {
+                            ForEach(images.indices, id: \.self) { index in
+                                if let uiImage = UIImage(data: images[index]) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(maxWidth: 250)
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                        .contextMenu {
+                                            imageContextMenu(for: uiImage)
+                                        }
+                                }
+                            }
+                            
+                            if !message.text.isEmpty {
+                                EnhancedMarkdownView(text: message.text)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 12)
+                                    .contextMenu {
+                                        textContextMenu(for: message.text)
+                                    }
+                            }
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.white.opacity(0.1))
+                        )
+                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+                    } else {
+                        
+                        EnhancedMarkdownView(text: message.text)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.white.opacity(0.1))
+                            )
+                            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+                            .contextMenu {
+                                textContextMenu(for: message.text)
+                            }
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let images = message.images, !images.isEmpty {
+                            ForEach(images.indices, id: \.self) { index in
+                                if let uiImage = UIImage(data: images[index]) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(maxWidth: 250)
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                        .contextMenu {
+                                            imageContextMenu(for: uiImage)
+                                        }
+                                }
+                            }
+                        }
+                        
+                        if !message.text.isEmpty {
+                            EnhancedMarkdownView(text: message.text)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .contextMenu {
+                                    aiTextContextMenu(for: message.text)
+                                }
+                        }
+                    }
+                    Spacer()
+                }
+            }
+            .padding(.horizontal)
+            .overlay(
+                Group {
+                    if showingSaveSuccess {
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                Text("Saved to Photos")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                    .background(
+                                        Capsule()
+                                            .fill(Color.green.opacity(0.9))
+                                    )
+                                    .padding()
+                                Spacer()
+                            }
+                            Spacer()
+                        }
+                        .transition(.scale.combined(with: .opacity))
+                    }
+                }
+            )
+        }
+        
+        private func parseMarkdown(_ text: String) -> AttributedString {
+            do {
+                var attributed = try AttributedString(markdown: text)
+                attributed.font = .system(size: 17, design: .serif)
+                attributed.foregroundColor = .white
+                return attributed
+            } catch {
+                return AttributedString(text)
+            }
+        }
+        
+        // Context menu for text messages
+        @ViewBuilder
+        private func textContextMenu(for text: String) -> some View {
+            Button {
+                UIPasteboard.general.string = text
+                HapticManager.shared.notification(.success)
+            } label: {
+                Label("Copy", systemImage: "doc.on.doc")
+            }
+        }
+        
+        // Context menu for AI-generated text (with regenerate option)
+        @ViewBuilder
+        private func aiTextContextMenu(for text: String) -> some View {
+            Button {
+                UIPasteboard.general.string = text
+                HapticManager.shared.notification(.success)
+            } label: {
+                Label("Copy", systemImage: "doc.on.doc")
+            }
+            
+            Button {
+                // Regenerate functionality would be handled by the parent view
+                HapticManager.shared.impact(.medium)
+            } label: {
+                Label("Regenerate", systemImage: "arrow.clockwise")
+            }
+        }
+        
+        // Context menu for images
+        @ViewBuilder
+        private func imageContextMenu(for image: UIImage) -> some View {
+            Button {
+                UIPasteboard.general.image = image
+                HapticManager.shared.notification(.success)
+            } label: {
+                Label("Copy Image", systemImage: "doc.on.doc")
+            }
+            
+            Button {
+                EclipseImageSaver.shared.saveImage(image) { success, error in
+                    if success {
+                        HapticManager.shared.notification(.success)
+                        withAnimation {
+                            showingSaveSuccess = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showingSaveSuccess = false
+                            }
+                        }
+                    } else {
+                        HapticManager.shared.notification(.error)
+                        // Could show an error alert here
+                    }
+                }
+            } label: {
+                Label("Save to Photos", systemImage: "square.and.arrow.down")
+            }
+            
+            Button {
+                // Share sheet would go here
+                HapticManager.shared.impact(.light)
+            } label: {
+                Label("Share", systemImage: "square.and.arrow.up")
+            }
+        }
+    }
+
+// MARK: - Preview
+
+#Preview {
+    ContentView()
+}
+
+// MARK: - Image Generation Indicator (Liquid Glass Pill)
+
+struct ImageGenerationIndicator: View {
+        @State private var animationPhase: CGFloat = 0
+        @State private var progress: CGFloat = 0
+        @State private var currentTextIndex = 0
+        @State private var shimmerOffset: CGFloat = -1.5
+        
+        private let statusTexts = [
+            "Using imagination",
+            "Magnifying details",
+            "Crafting pixels",
+            "Adding magic",
+            "Shaping vision",
+            "Dreaming in color",
+            "Painting reality",
+            "Conjuring visuals",
+            "Weaving light",
+            "Sculpting beauty",
+            "Channeling creativity",
+            "Mixing pigments",
+            "Rendering dreams",
+            "Forging artistry",
+            "Summoning pixels",
+            "Brewing colors",
+            "Etching details",
+            "Composing scenes",
+            "Distilling essence",
+            "Crafting wonder",
+            "Molding perception",
+            "Awakening visions",
+            "Harmonizing hues",
+            "Crystallizing ideas",
+            "Infusing soul",
+            "Assembling moments",
+            "Polishing perfection",
+            "Refining brilliance",
+            "Kindling inspiration",
+            "Orchestrating beauty",
+            "Manifesting thoughts",
+            "Birthing creation",
+            "Illuminating concepts",
+            "Capturing essence",
+            "Designing reality",
+            "Blending dimensions",
+            "Invoking wonder",
+            "Transcribing visions",
+            "Fusing imagination",
+            "Materializing dreams",
+            "Arranging photons",
+            "Generating wonder",
+            "Bending light",
+            "Coding beauty",
+            "Processing magic",
+            "Computing artistry",
+            "Synthesizing vision",
+            "Calculating wonder",
+            "Analyzing aesthetics",
+            "Optimizing beauty"
+        ]
+        
+        var body: some View {
+            VStack(spacing: 12) {
+                HStack(spacing: 12) {
+                    // Animated sparkle icon
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.white)
+                        .opacity(0.7 + Double(sin(animationPhase * .pi * 2)) * 0.3)
+                        .scaleEffect(0.9 + Double(sin(animationPhase * .pi * 2)) * 0.1)
+                    
+                    // Rotating status text
+                    Text(statusTexts[currentTextIndex])
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                        .id(currentTextIndex)
+                }
+                .frame(maxWidth: .infinity)
+                
+                // Progress bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        // Background track
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.white.opacity(0.2))
+                            .frame(height: 3)
+                        
+                        // Progress fill
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.white.opacity(0.8))
+                            .frame(width: geometry.size.width * progress, height: 3)
+                    }
+                }
+                .frame(height: 3)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+            .background(
+                ZStack {
+                    // Base background
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.05))
+                    
+                    // Shimmer effect
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(0),
+                            .white.opacity(0.15),
+                            .white.opacity(0)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .offset(x: shimmerOffset * 300)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                }
+            )
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+            .frame(maxWidth: 300)
+            .onAppear {
+                // Sparkle animation
+                withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: false)) {
+                    animationPhase = 1
+                }
+                
+                // Progress animation
+                withAnimation(.linear(duration: 8).repeatForever(autoreverses: false)) {
+                    progress = 0.9
+                }
+                
+                // Shimmer animation
+                withAnimation(.linear(duration: 2.5).repeatForever(autoreverses: false)) {
+                    shimmerOffset = 1.5
+                }
+                
+                // Text rotation timer
+                Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { _ in
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        currentTextIndex = (currentTextIndex + 1) % statusTexts.count
+                    }
+                }
+            }
+        }
+    }
+
+// MARK: - Text Generation Indicator (Clean Minimalist)
+
+struct TextGenerationIndicator: View {
+        @State private var animationPhase: CGFloat = 0
+        @State private var pulsePhase: CGFloat = 0
+        @State private var shimmerOffset: CGFloat = -1.5
+        
+        var body: some View {
+            HStack(spacing: 12) {
+                // Animated thinking icon with pulse
+                Image(systemName: "brain.head.profile")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(.white)
+                    .opacity(0.6 + Double(sin(pulsePhase * .pi * 2)) * 0.3)
+                    .scaleEffect(0.95 + Double(sin(pulsePhase * .pi * 2)) * 0.05)
+                
+                // Three animated dots with more dynamic movement
+                HStack(spacing: 6) {
+                    ForEach(0..<3, id: \.self) { index in
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 7, height: 7)
+                            .opacity(dotOpacity(for: index))
+                            .scaleEffect(dotScale(for: index))
+                            .offset(y: dotOffset(for: index))
+                    }
+                }
+                
+                Text("Thinking")
+                    .font(.system(size: 16, weight: .medium, design: .serif))
+                    .foregroundStyle(.white.opacity(0.8))
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .background(
+                ZStack {
+                    // Base background
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.04))
+                    
+                    // Shimmer effect
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(0),
+                            .white.opacity(0.1),
+                            .white.opacity(0)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .offset(x: shimmerOffset * 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                }
+            )
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+            .onAppear {
+                // Dot animation
+                withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: false)) {
+                    animationPhase = 1
+                }
+                
+                // Pulse animation for icon
+                withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: false)) {
+                    pulsePhase = 1
+                }
+                
+                // Shimmer animation
+                withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                    shimmerOffset = 1.5
+                }
+            }
+        }
+        
+        private func dotOffset(for index: Int) -> CGFloat {
+            let delay = Double(index) * 0.25
+            let progress = (animationPhase + delay).truncatingRemainder(dividingBy: 1.0)
+            return CGFloat(sin(progress * .pi * 2)) * -5
+        }
+        
+        private func dotOpacity(for index: Int) -> Double {
+            let delay = Double(index) * 0.25
+            let progress = (animationPhase + delay).truncatingRemainder(dividingBy: 1.0)
+            return 0.4 + (sin(progress * .pi * 2) * 0.5 + 0.5) * 0.6
+        }
+        
+        private func dotScale(for index: Int) -> CGFloat {
+            let delay = Double(index) * 0.25
+            let progress = (animationPhase + delay).truncatingRemainder(dividingBy: 1.0)
+            return 0.7 + CGFloat((sin(progress * .pi * 2) * 0.5 + 0.5)) * 0.3
+        }
+    }
+
+// MARK: - Image Analyzing Indicator
+
+struct ImageAnalyzingIndicator: View {
+        @State private var animationPhase: CGFloat = 0
+        @State private var progress: CGFloat = 0
+        @State private var currentTextIndex = 0
+        @State private var shimmerOffset: CGFloat = -1.5
+        
+        private let statusTexts = [
+            "Analyzing masterpiece",
+            "Decoding visuals",
+            "Interpreting imagery",
+            "Reading the scene",
+            "Understanding composition",
+            "Examining details",
+            "Processing artwork",
+            "Studying aesthetics",
+            "Inspecting elements",
+            "Discovering nuances",
+            "Evaluating artistry",
+            "Perceiving depth",
+            "Observing patterns",
+            "Detecting features",
+            "Recognizing subjects",
+            "Appraising beauty",
+            "Scanning pixels",
+            "Comprehending vision",
+            "Assessing quality",
+            "Identifying themes",
+            "Exploring content",
+            "Measuring brilliance",
+            "Investigating scene",
+            "Parsing imagery",
+            "Reviewing composition"
+        ]
+        
+        var body: some View {
+            VStack(spacing: 12) {
+                HStack(spacing: 12) {
+                    // Animated eye icon
+                    Image(systemName: "eye")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.white)
+                        .opacity(0.7 + Double(sin(animationPhase * .pi * 2)) * 0.3)
+                        .scaleEffect(0.9 + Double(sin(animationPhase * .pi * 2)) * 0.1)
+                    
+                    // Rotating status text
+                    Text(statusTexts[currentTextIndex])
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                        .id(currentTextIndex)
+                }
+                .frame(maxWidth: .infinity)
+                
+                // Progress bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        // Background track
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.white.opacity(0.2))
+                            .frame(height: 3)
+                        
+                        // Progress fill with gradient
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(
+                                LinearGradient(
+                                    colors: [.orange, .white],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: geometry.size.width * progress, height: 3)
+                    }
+                }
+                .frame(height: 3)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+            .background(
+                ZStack {
+                    // Base background
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.05))
+                    
+                    // Shimmer effect
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(0),
+                            .orange.opacity(0.15),
+                            .white.opacity(0)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .offset(x: shimmerOffset * 300)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                }
+            )
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+            .frame(maxWidth: 300)
+            .onAppear {
+                // Eye animation
+                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: false)) {
+                    animationPhase = 1
+                }
+                
+                // Progress animation
+                withAnimation(.linear(duration: 6).repeatForever(autoreverses: false)) {
+                    progress = 0.85
+                }
+                
+                // Shimmer animation
+                withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                    shimmerOffset = 1.5
+                }
+                
+                // Text rotation timer
+                Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        currentTextIndex = (currentTextIndex + 1) % statusTexts.count
+                    }
+                }
+            }
+        }
+    }
+
+// MARK: - Image Picker
+
+struct ImagePicker: UIViewControllerRepresentable {
+        @Binding var image: UIImage?
+        @Environment(\.dismiss) var dismiss
+        var sourceType: UIImagePickerController.SourceType
+        
+        func makeUIViewController(context: Context) -> UIImagePickerController {
+            let picker = UIImagePickerController()
+            picker.sourceType = sourceType
+            picker.delegate = context.coordinator
+            return picker
+        }
+        
+        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator(self)
+        }
+        
+        class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+            let parent: ImagePicker
+            
+            init(_ parent: ImagePicker) {
+                self.parent = parent
+            }
+            
+            func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+                if let selectedImage = info[.originalImage] as? UIImage {
+                    parent.image = selectedImage
+                }
+                parent.dismiss()
+            }
+            
+            func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+                parent.dismiss()
+            }
+        }
+    }
+
+// MARK: - Table Generation Indicator (Liquid Glass Pill)
+
+struct TableGenerationIndicator: View {
+        @State private var animationPhase: CGFloat = 0
+        @State private var progress: CGFloat = 0
+        @State private var currentTextIndex = 0
+        @State private var shimmerOffset: CGFloat = -1.5
+        
+        private let statusTexts = [
+            "Structuring data",
+            "Organizing columns",
+            "Building grid",
+            "Aligning cells",
+            "Formatting rows",
+            "Calculating layout",
+            "Arranging content",
+            "Designing table",
+            "Sorting elements",
+            "Compiling view",
+            "Processing fields",
+            "Indexing data"
+        ]
+        
+        var body: some View {
+            VStack(spacing: 12) {
+                HStack(spacing: 12) {
+                    // Animated grid icon
+                    Image(systemName: "tablecells.fill")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.white)
+                        .opacity(0.7 + Double(sin(animationPhase * .pi * 2)) * 0.3)
+                        .scaleEffect(0.9 + Double(sin(animationPhase * .pi * 2)) * 0.1)
+                    
+                    // Rotating status text
+                    Text(statusTexts[currentTextIndex])
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                        .id(currentTextIndex)
+                }
+                .frame(maxWidth: .infinity)
+                
+                // Progress bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.white.opacity(0.1))
+                            .frame(height: 4)
+                        
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.blue, .purple, .pink],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: geometry.size.width * progress, height: 4)
+                            .shadow(color: .blue.opacity(0.5), radius: 4, x: 0, y: 0)
+                    }
+                }
+                .frame(height: 4)
+            }
+            .padding(.vertical, 16)
+            .padding(.horizontal, 20)
+            .frame(width: 280)
+            .background(
+                ZStack {
+                    // Base background
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.04))
+                    
+                    // Shimmer effect
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(0),
+                            .white.opacity(0.1),
+                            .white.opacity(0)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .offset(x: shimmerOffset * 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                }
+            )
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+            .onAppear {
+                // Pulse animation for icon
+                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: false)) {
+                    animationPhase = 1
+                }
+                
+                // Progress animation
+                withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) {
+                    progress = 0.8
+                }
+                
+                // Shimmer animation
+                withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                    shimmerOffset = 1.5
+                }
+                
+                // Text rotation timer
+                Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        currentTextIndex = (currentTextIndex + 1) % statusTexts.count
+                    }
+                }
+            }
+        }
+    }
+
+// MARK: - Calendar Access Indicator
+
+struct CalendarAccessIndicator: View {
+        @State private var shimmerOffset: CGFloat = -1.5
+        @State private var iconScale: CGFloat = 1.0
+        
+        var body: some View {
+            HStack(spacing: 12) {
+                Image(systemName: "calendar")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(.white)
+                    .scaleEffect(iconScale)
+                
+                Text("Checking Schedule")
+                    .font(.system(size: 16, weight: .medium, design: .serif))
+                    .foregroundStyle(.white.opacity(0.9))
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .background(
+                ZStack {
+                    // Base background
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.05))
+                    
+                    // Shimmer effect
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(0),
+                            .red.opacity(0.15),
+                            .white.opacity(0)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .offset(x: shimmerOffset * 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                }
+            )
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+            .onAppear {
+                // Icon animation
+                withAnimation(.spring(duration: 0.6, bounce: 0.4).repeatForever(autoreverses: true)) {
+                    iconScale = 1.1
+                }
+                
+                // Shimmer animation
+                withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                    shimmerOffset = 1.5
+                }
+            }
+        }
+    }
+
+// MARK: - Scroll Offset Preference Key
+
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = nextValue()
+        }
+    }
+

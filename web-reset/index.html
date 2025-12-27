@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+
+    <div class="card">
+        <!-- FORM VIEW -->
+        <div id="form-view">
+            <!-- FORCED SMALL SIZE -->
+            <img src="logo.png" alt="Eclipse Logo" class="app-logo" width="60" height="60"
+                style="width: 60px !important; height: 60px !important; max-width: 60px !important; min-width: 60px !important; display: block; margin: 0 auto 20px auto;">
+
+            <h1>Reset Password</h1>
+            <p class="subtitle">Enter a new secure password.</p>
+
+            <form onsubmit="handleReset(event)">
+                <div class="input-group">
+                    <label>New Password</label>
+                    <input type="password" id="new-password" placeholder="Min. 6 characters" required minlength="6">
+                </div>
+
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Re-enter password" required minlength="6">
+                </div>
+
+                <button type="submit" id="submit-btn" disabled>Update Password</button>
+                <div id="error-message" class="error-message"></div>
+            </form>
+        </div>
+
+        <!-- SUCCESS VIEW (Hidden by inline style) -->
+        <div id="success-view" class="success-view" style="display: none;">
+            <div class="success-icon-container">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h1>Password Updated</h1>
+            <p class="subtitle">You can now close this window and sign in.</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

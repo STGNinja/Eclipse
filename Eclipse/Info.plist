@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.455724679534-1vr0r40ht5gtvp61rneisq8o7pkrkc5q</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.eclipse.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>eclipse</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Eclipse uses your location to provide local weather and recommendations.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Eclipse needs access to health data to provide personalized wellness insights.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Eclipse uses health data to help you track your wellness goals.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlegmail</string>
+		<string>googlemail</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>betterlunr</string>
+	</dict>
+</dict>
+</plist>

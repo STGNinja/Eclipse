@@ -1,0 +1,16 @@
+[debug] [2025-12-17T21:32:14.648Z] ----------------------------------------------------------------------
+[debug] [2025-12-17T21:32:14.649Z] Command:       /usr/local/bin/node /Users/jaxonsmith/node_modules/.bin/firebase deploy --config firebase-reset.json --only hosting --project eclipse-2a42b
+[debug] [2025-12-17T21:32:14.650Z] CLI Version:   15.0.0
+[debug] [2025-12-17T21:32:14.650Z] Platform:      darwin
+[debug] [2025-12-17T21:32:14.650Z] Node Version:  v22.16.0
+[debug] [2025-12-17T21:32:14.650Z] Time:          Wed Dec 17 2025 14:32:14 GMT-0700 (Mountain Standard Time)
+[debug] [2025-12-17T21:32:14.650Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-17T21:32:15.425Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-17T21:32:15.425Z] > authorizing via signed-in user (jaxonsmuth123@gmail.com)
+[debug] [2025-12-17T21:32:15.425Z] [iam] checking project eclipse-2a42b for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-12-17T21:32:15.425Z] Checked if tokens are valid: false, expires at: 1765381311687
+[debug] [2025-12-17T21:32:15.426Z] Checked if tokens are valid: false, expires at: 1765381311687
+[debug] [2025-12-17T21:32:15.426Z] > refreshing access token with scopes: []
+[debug] [2025-12-17T21:32:15.426Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-12-17T21:32:15.426Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]

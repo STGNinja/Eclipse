@@ -1,0 +1,910 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1612E12D2EF1E4EB005E8B6F /* GEMINI_LIVE_FIX.md in Resources */ = {isa = PBXBuildFile; fileRef = 1612E12C2EF1E4EA005E8B6F /* GEMINI_LIVE_FIX.md */; };
+		1612E13D2EF2130D005E8B6F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1612E13C2EF2130D005E8B6F /* FirebaseCore */; };
+		1612E14D2EF2F6C8005E8B6F /* BUG_FIXES_12_17.md in Resources */ = {isa = PBXBuildFile; fileRef = 1612E14C2EF2F6C8005E8B6F /* BUG_FIXES_12_17.md */; };
+		1612E14F2EF2F8A2005E8B6F /* BUG_FIXES_AND_FEATURES_12_17_PART2.md in Resources */ = {isa = PBXBuildFile; fileRef = 1612E14E2EF2F8A2005E8B6F /* BUG_FIXES_AND_FEATURES_12_17_PART2.md */; };
+		1612E1512EF2F8BD005E8B6F /* UPDATE_SUMMARY_12_17.md in Resources */ = {isa = PBXBuildFile; fileRef = 1612E1502EF2F8BD005E8B6F /* UPDATE_SUMMARY_12_17.md */; };
+		1613BF192EF0886600BEEDB2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1613BF182EF0886600BEEDB2 /* FirebaseFirestore */; };
+		162185222EF9198E0024CE04 /* SCROLL_STOP_IMAGE_FIXES.md in Resources */ = {isa = PBXBuildFile; fileRef = 162185212EF9198E0024CE04 /* SCROLL_STOP_IMAGE_FIXES.md */; };
+		162185242EF91B410024CE04 /* SCROLL_AND_IMAGE_FIX.md in Resources */ = {isa = PBXBuildFile; fileRef = 162185232EF91B410024CE04 /* SCROLL_AND_IMAGE_FIX.md */; };
+		163A29072EF4C69600BC9D0F /* APPLE_MUSIC_URL_SCHEME_IMPLEMENTATION.md in Resources */ = {isa = PBXBuildFile; fileRef = 163A29062EF4C69500BC9D0F /* APPLE_MUSIC_URL_SCHEME_IMPLEMENTATION.md */; };
+		164E9A8E2EF0A23000F0A962 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 164E9A8D2EF0A23000F0A962 /* FirebaseStorage */; };
+		1676A2C12EEEB8C800A74F2F /* FIXES_APPLIED.md in Resources */ = {isa = PBXBuildFile; fileRef = 1676A2C02EEEB8C800A74F2F /* FIXES_APPLIED.md */; };
+		1676A2CD2EEEBC5E00A74F2F /* FILES_RESTORED.md in Resources */ = {isa = PBXBuildFile; fileRef = 1676A2CC2EEEBC5E00A74F2F /* FILES_RESTORED.md */; };
+		1676A2D32EEEBD2300A74F2F /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1676A2D22EEEBD2300A74F2F /* HistoryService.swift */; };
+		1676A2D52EEEBD5200A74F2F /* COMPLETE_REBUILD.md in Resources */ = {isa = PBXBuildFile; fileRef = 1676A2D42EEEBD5200A74F2F /* COMPLETE_REBUILD.md */; };
+		1676A2D72EEEBD7A00A74F2F /* BUILD_GUIDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 1676A2D62EEEBD7A00A74F2F /* BUILD_GUIDE.md */; };
+		1676A3142EEF540100A74F2F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1676A3132EEF540100A74F2F /* FirebaseAuth */; };
+		1676A3192EEF553E00A74F2F /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 1676A3182EEF553E00A74F2F /* GoogleSignIn */; };
+		1676A31B2EEF553E00A74F2F /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1676A31A2EEF553E00A74F2F /* GoogleSignInSwift */; };
+		1676A3252EEF640E00A74F2F /* PhotoSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1676A3242EEF640E00A74F2F /* PhotoSaver.swift */; };
+		1676A3272EEF642400A74F2F /* PHOTO_PERMISSION_SETUP.md in Resources */ = {isa = PBXBuildFile; fileRef = 1676A3262EEF642400A74F2F /* PHOTO_PERMISSION_SETUP.md */; };
+		1676A3622EEF7E9A00A74F2F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1676A3612EEF7E9900A74F2F /* WidgetKit.framework */; };
+		1676A3642EEF7E9A00A74F2F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1676A3632EEF7E9A00A74F2F /* SwiftUI.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1676A28E2EEEA81700A74F2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1676A2782EEEA81300A74F2F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1676A27F2EEEA81400A74F2F;
+			remoteInfo = Eclipse;
+		};
+		1676A2982EEEA81700A74F2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1676A2782EEEA81300A74F2F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1676A27F2EEEA81400A74F2F;
+			remoteInfo = Eclipse;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1612E12C2EF1E4EA005E8B6F /* GEMINI_LIVE_FIX.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = GEMINI_LIVE_FIX.md; sourceTree = "<group>"; };
+		1612E14C2EF2F6C8005E8B6F /* BUG_FIXES_12_17.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUG_FIXES_12_17.md; sourceTree = "<group>"; };
+		1612E14E2EF2F8A2005E8B6F /* BUG_FIXES_AND_FEATURES_12_17_PART2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUG_FIXES_AND_FEATURES_12_17_PART2.md; sourceTree = "<group>"; };
+		1612E1502EF2F8BD005E8B6F /* UPDATE_SUMMARY_12_17.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = UPDATE_SUMMARY_12_17.md; sourceTree = "<group>"; };
+		162185212EF9198E0024CE04 /* SCROLL_STOP_IMAGE_FIXES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SCROLL_STOP_IMAGE_FIXES.md; sourceTree = "<group>"; };
+		162185232EF91B410024CE04 /* SCROLL_AND_IMAGE_FIX.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SCROLL_AND_IMAGE_FIX.md; sourceTree = "<group>"; };
+		163A29062EF4C69500BC9D0F /* APPLE_MUSIC_URL_SCHEME_IMPLEMENTATION.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = APPLE_MUSIC_URL_SCHEME_IMPLEMENTATION.md; sourceTree = "<group>"; };
+		1676A2802EEEA81400A74F2F /* Eclipse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eclipse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1676A28D2EEEA81700A74F2F /* EclipseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EclipseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1676A2972EEEA81700A74F2F /* EclipseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EclipseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1676A2C02EEEB8C800A74F2F /* FIXES_APPLIED.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FIXES_APPLIED.md; sourceTree = "<group>"; };
+		1676A2CC2EEEBC5E00A74F2F /* FILES_RESTORED.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FILES_RESTORED.md; sourceTree = "<group>"; };
+		1676A2D22EEEBD2300A74F2F /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
+		1676A2D42EEEBD5200A74F2F /* COMPLETE_REBUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = COMPLETE_REBUILD.md; sourceTree = "<group>"; };
+		1676A2D62EEEBD7A00A74F2F /* BUILD_GUIDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD_GUIDE.md; sourceTree = "<group>"; };
+		1676A3242EEF640E00A74F2F /* PhotoSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSaver.swift; sourceTree = "<group>"; };
+		1676A3262EEF642400A74F2F /* PHOTO_PERMISSION_SETUP.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PHOTO_PERMISSION_SETUP.md; sourceTree = "<group>"; };
+		1676A35F2EEF7E9900A74F2F /* EclipseWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EclipseWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1676A3612EEF7E9900A74F2F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		1676A3632EEF7E9A00A74F2F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1676A31F2EEF563A00A74F2F /* Exceptions for "Eclipse" folder in "Eclipse" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 1676A27F2EEEA81400A74F2F /* Eclipse */;
+		};
+		1676A36F2EEF7E9D00A74F2F /* Exceptions for "EclipseWidget" folder in "EclipseWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 1676A35E2EEF7E9900A74F2F /* EclipseWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		1676A2822EEEA81400A74F2F /* Eclipse */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1676A31F2EEF563A00A74F2F /* Exceptions for "Eclipse" folder in "Eclipse" target */,
+			);
+			path = Eclipse;
+			sourceTree = "<group>";
+		};
+		1676A2902EEEA81700A74F2F /* EclipseTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EclipseTests;
+			sourceTree = "<group>";
+		};
+		1676A29A2EEEA81700A74F2F /* EclipseUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EclipseUITests;
+			sourceTree = "<group>";
+		};
+		1676A3652EEF7E9A00A74F2F /* EclipseWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1676A36F2EEF7E9D00A74F2F /* Exceptions for "EclipseWidget" folder in "EclipseWidgetExtension" target */,
+			);
+			path = EclipseWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1676A27D2EEEA81400A74F2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1676A3142EEF540100A74F2F /* FirebaseAuth in Frameworks */,
+				1676A3192EEF553E00A74F2F /* GoogleSignIn in Frameworks */,
+				1613BF192EF0886600BEEDB2 /* FirebaseFirestore in Frameworks */,
+				1676A31B2EEF553E00A74F2F /* GoogleSignInSwift in Frameworks */,
+				1612E13D2EF2130D005E8B6F /* FirebaseCore in Frameworks */,
+				164E9A8E2EF0A23000F0A962 /* FirebaseStorage in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A28A2EEEA81700A74F2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A2942EEEA81700A74F2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A35C2EEF7E9900A74F2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1676A3642EEF7E9A00A74F2F /* SwiftUI.framework in Frameworks */,
+				1676A3622EEF7E9A00A74F2F /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1676A2772EEEA81300A74F2F = {
+			isa = PBXGroup;
+			children = (
+				1676A2822EEEA81400A74F2F /* Eclipse */,
+				1676A2902EEEA81700A74F2F /* EclipseTests */,
+				1676A29A2EEEA81700A74F2F /* EclipseUITests */,
+				1676A3652EEF7E9A00A74F2F /* EclipseWidget */,
+				1676A3602EEF7E9900A74F2F /* Frameworks */,
+				1676A2812EEEA81400A74F2F /* Products */,
+				1676A2C02EEEB8C800A74F2F /* FIXES_APPLIED.md */,
+				1676A2CC2EEEBC5E00A74F2F /* FILES_RESTORED.md */,
+				1676A2D22EEEBD2300A74F2F /* HistoryService.swift */,
+				1676A2D42EEEBD5200A74F2F /* COMPLETE_REBUILD.md */,
+				1676A2D62EEEBD7A00A74F2F /* BUILD_GUIDE.md */,
+				1676A3242EEF640E00A74F2F /* PhotoSaver.swift */,
+				1676A3262EEF642400A74F2F /* PHOTO_PERMISSION_SETUP.md */,
+				1612E12C2EF1E4EA005E8B6F /* GEMINI_LIVE_FIX.md */,
+				1612E14C2EF2F6C8005E8B6F /* BUG_FIXES_12_17.md */,
+				1612E14E2EF2F8A2005E8B6F /* BUG_FIXES_AND_FEATURES_12_17_PART2.md */,
+				1612E1502EF2F8BD005E8B6F /* UPDATE_SUMMARY_12_17.md */,
+				163A29062EF4C69500BC9D0F /* APPLE_MUSIC_URL_SCHEME_IMPLEMENTATION.md */,
+				162185212EF9198E0024CE04 /* SCROLL_STOP_IMAGE_FIXES.md */,
+				162185232EF91B410024CE04 /* SCROLL_AND_IMAGE_FIX.md */,
+			);
+			sourceTree = "<group>";
+		};
+		1676A2812EEEA81400A74F2F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1676A2802EEEA81400A74F2F /* Eclipse.app */,
+				1676A28D2EEEA81700A74F2F /* EclipseTests.xctest */,
+				1676A2972EEEA81700A74F2F /* EclipseUITests.xctest */,
+				1676A35F2EEF7E9900A74F2F /* EclipseWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1676A3602EEF7E9900A74F2F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1676A3612EEF7E9900A74F2F /* WidgetKit.framework */,
+				1676A3632EEF7E9A00A74F2F /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1676A27F2EEEA81400A74F2F /* Eclipse */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1676A2A12EEEA81700A74F2F /* Build configuration list for PBXNativeTarget "Eclipse" */;
+			buildPhases = (
+				1676A27C2EEEA81400A74F2F /* Sources */,
+				1676A27D2EEEA81400A74F2F /* Frameworks */,
+				1676A27E2EEEA81400A74F2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1676A2822EEEA81400A74F2F /* Eclipse */,
+			);
+			name = Eclipse;
+			packageProductDependencies = (
+				1676A3132EEF540100A74F2F /* FirebaseAuth */,
+				1676A3182EEF553E00A74F2F /* GoogleSignIn */,
+				1676A31A2EEF553E00A74F2F /* GoogleSignInSwift */,
+				1613BF182EF0886600BEEDB2 /* FirebaseFirestore */,
+				164E9A8D2EF0A23000F0A962 /* FirebaseStorage */,
+				1612E13C2EF2130D005E8B6F /* FirebaseCore */,
+			);
+			productName = Eclipse;
+			productReference = 1676A2802EEEA81400A74F2F /* Eclipse.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1676A28C2EEEA81700A74F2F /* EclipseTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1676A2A42EEEA81700A74F2F /* Build configuration list for PBXNativeTarget "EclipseTests" */;
+			buildPhases = (
+				1676A2892EEEA81700A74F2F /* Sources */,
+				1676A28A2EEEA81700A74F2F /* Frameworks */,
+				1676A28B2EEEA81700A74F2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1676A28F2EEEA81700A74F2F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1676A2902EEEA81700A74F2F /* EclipseTests */,
+			);
+			name = EclipseTests;
+			packageProductDependencies = (
+			);
+			productName = EclipseTests;
+			productReference = 1676A28D2EEEA81700A74F2F /* EclipseTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1676A2962EEEA81700A74F2F /* EclipseUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1676A2A72EEEA81700A74F2F /* Build configuration list for PBXNativeTarget "EclipseUITests" */;
+			buildPhases = (
+				1676A2932EEEA81700A74F2F /* Sources */,
+				1676A2942EEEA81700A74F2F /* Frameworks */,
+				1676A2952EEEA81700A74F2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1676A2992EEEA81700A74F2F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1676A29A2EEEA81700A74F2F /* EclipseUITests */,
+			);
+			name = EclipseUITests;
+			packageProductDependencies = (
+			);
+			productName = EclipseUITests;
+			productReference = 1676A2972EEEA81700A74F2F /* EclipseUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		1676A35E2EEF7E9900A74F2F /* EclipseWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1676A3702EEF7E9D00A74F2F /* Build configuration list for PBXNativeTarget "EclipseWidgetExtension" */;
+			buildPhases = (
+				1676A35B2EEF7E9900A74F2F /* Sources */,
+				1676A35C2EEF7E9900A74F2F /* Frameworks */,
+				1676A35D2EEF7E9900A74F2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1676A3652EEF7E9A00A74F2F /* EclipseWidget */,
+			);
+			name = EclipseWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = EclipseWidgetExtension;
+			productReference = 1676A35F2EEF7E9900A74F2F /* EclipseWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1676A2782EEEA81300A74F2F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2610;
+				LastUpgradeCheck = 2610;
+				TargetAttributes = {
+					1676A27F2EEEA81400A74F2F = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					1676A28C2EEEA81700A74F2F = {
+						CreatedOnToolsVersion = 26.1;
+						TestTargetID = 1676A27F2EEEA81400A74F2F;
+					};
+					1676A2962EEEA81700A74F2F = {
+						CreatedOnToolsVersion = 26.1;
+						TestTargetID = 1676A27F2EEEA81400A74F2F;
+					};
+					1676A35E2EEF7E9900A74F2F = {
+						CreatedOnToolsVersion = 26.1;
+					};
+				};
+			};
+			buildConfigurationList = 1676A27B2EEEA81300A74F2F /* Build configuration list for PBXProject "Eclipse" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1676A2772EEEA81300A74F2F;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1676A3122EEF540100A74F2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				1676A3172EEF553E00A74F2F /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1676A2812EEEA81400A74F2F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1676A27F2EEEA81400A74F2F /* Eclipse */,
+				1676A28C2EEEA81700A74F2F /* EclipseTests */,
+				1676A2962EEEA81700A74F2F /* EclipseUITests */,
+				1676A35E2EEF7E9900A74F2F /* EclipseWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1676A27E2EEEA81400A74F2F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1676A2D52EEEBD5200A74F2F /* COMPLETE_REBUILD.md in Resources */,
+				1612E14F2EF2F8A2005E8B6F /* BUG_FIXES_AND_FEATURES_12_17_PART2.md in Resources */,
+				1676A2C12EEEB8C800A74F2F /* FIXES_APPLIED.md in Resources */,
+				162185242EF91B410024CE04 /* SCROLL_AND_IMAGE_FIX.md in Resources */,
+				1676A3272EEF642400A74F2F /* PHOTO_PERMISSION_SETUP.md in Resources */,
+				1676A2CD2EEEBC5E00A74F2F /* FILES_RESTORED.md in Resources */,
+				1612E12D2EF1E4EB005E8B6F /* GEMINI_LIVE_FIX.md in Resources */,
+				1612E14D2EF2F6C8005E8B6F /* BUG_FIXES_12_17.md in Resources */,
+				162185222EF9198E0024CE04 /* SCROLL_STOP_IMAGE_FIXES.md in Resources */,
+				163A29072EF4C69600BC9D0F /* APPLE_MUSIC_URL_SCHEME_IMPLEMENTATION.md in Resources */,
+				1612E1512EF2F8BD005E8B6F /* UPDATE_SUMMARY_12_17.md in Resources */,
+				1676A2D72EEEBD7A00A74F2F /* BUILD_GUIDE.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A28B2EEEA81700A74F2F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A2952EEEA81700A74F2F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A35D2EEF7E9900A74F2F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1676A27C2EEEA81400A74F2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1676A2D32EEEBD2300A74F2F /* HistoryService.swift in Sources */,
+				1676A3252EEF640E00A74F2F /* PhotoSaver.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A2892EEEA81700A74F2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A2932EEEA81700A74F2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1676A35B2EEF7E9900A74F2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1676A28F2EEEA81700A74F2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1676A27F2EEEA81400A74F2F /* Eclipse */;
+			targetProxy = 1676A28E2EEEA81700A74F2F /* PBXContainerItemProxy */;
+		};
+		1676A2992EEEA81700A74F2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1676A27F2EEEA81400A74F2F /* Eclipse */;
+			targetProxy = 1676A2982EEEA81700A74F2F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1676A29F2EEEA81700A74F2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = HUX429552N;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1676A2A02EEEA81700A74F2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = HUX429552N;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1676A2A22EEEA81700A74F2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = LUNRICON;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Eclipse/Eclipse.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Eclipse/Info.plist;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Eclipse needs access to your music library to search for songs and create playlists based on your requests.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Eclipse needs access to your calendar to help you manage your schedule and create events.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Eclipse needs camera access to let you capture and analyze photos.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Eclipse needs access to health data to provide personalized wellness insights.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Eclipse uses health data to help you track your wellness goals.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Eclipse uses your location to provide local weather and recommendations.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Eclipse needs microphone access to have voice conversations with you.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Eclipse needs access to save generated images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Eclipse needs access to your photo library to let you select images for analysis.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.Eclipse;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1676A2A32EEEA81700A74F2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = LUNRICON;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=*]" = LUNRICON;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Eclipse/Eclipse.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Eclipse/Info.plist;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Eclipse needs access to your music library to search for songs and create playlists based on your requests.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Eclipse needs access to your calendar to help you manage your schedule and create events.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Eclipse needs camera access to let you capture and analyze photos.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Eclipse needs access to health data to provide personalized wellness insights.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Eclipse uses health data to help you track your wellness goals.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Eclipse uses your location to provide local weather and recommendations.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Eclipse needs microphone access to have voice conversations with you.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Eclipse needs access to save generated images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Eclipse needs access to your photo library to let you select images for analysis.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.Eclipse;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1676A2A52EEEA81700A74F2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.EclipseTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Eclipse.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Eclipse";
+			};
+			name = Debug;
+		};
+		1676A2A62EEEA81700A74F2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.EclipseTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Eclipse.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Eclipse";
+			};
+			name = Release;
+		};
+		1676A2A82EEEA81700A74F2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.EclipseUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Eclipse;
+			};
+			name = Debug;
+		};
+		1676A2A92EEEA81700A74F2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.EclipseUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Eclipse;
+			};
+			name = Release;
+		};
+		1676A3712EEF7E9D00A74F2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EclipseWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EclipseWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.EclipseWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1676A3722EEF7E9D00A74F2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUX429552N;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EclipseWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EclipseWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JaxonSmith.EclipseWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1676A27B2EEEA81300A74F2F /* Build configuration list for PBXProject "Eclipse" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1676A29F2EEEA81700A74F2F /* Debug */,
+				1676A2A02EEEA81700A74F2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1676A2A12EEEA81700A74F2F /* Build configuration list for PBXNativeTarget "Eclipse" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1676A2A22EEEA81700A74F2F /* Debug */,
+				1676A2A32EEEA81700A74F2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1676A2A42EEEA81700A74F2F /* Build configuration list for PBXNativeTarget "EclipseTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1676A2A52EEEA81700A74F2F /* Debug */,
+				1676A2A62EEEA81700A74F2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1676A2A72EEEA81700A74F2F /* Build configuration list for PBXNativeTarget "EclipseUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1676A2A82EEEA81700A74F2F /* Debug */,
+				1676A2A92EEEA81700A74F2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1676A3702EEF7E9D00A74F2F /* Build configuration list for PBXNativeTarget "EclipseWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1676A3712EEF7E9D00A74F2F /* Debug */,
+				1676A3722EEF7E9D00A74F2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1676A3122EEF540100A74F2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.7.0;
+			};
+		};
+		1676A3172EEF553E00A74F2F /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-IOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1612E13C2EF2130D005E8B6F /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1676A3122EEF540100A74F2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		1613BF182EF0886600BEEDB2 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1676A3122EEF540100A74F2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		164E9A8D2EF0A23000F0A962 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1676A3122EEF540100A74F2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		1676A3132EEF540100A74F2F /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1676A3122EEF540100A74F2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		1676A3182EEF553E00A74F2F /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1676A3172EEF553E00A74F2F /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */;
+			productName = GoogleSignIn;
+		};
+		1676A31A2EEF553E00A74F2F /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1676A3172EEF553E00A74F2F /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1676A2782EEEA81300A74F2F /* Project object */;
+}

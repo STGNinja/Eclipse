@@ -1,0 +1,20 @@
+[debug] [2025-12-17T21:32:07.675Z] ----------------------------------------------------------------------
+[debug] [2025-12-17T21:32:07.676Z] Command:       /usr/local/bin/node /Users/jaxonsmith/node_modules/.bin/firebase deploy --config firebase-reset.json --only hosting
+[debug] [2025-12-17T21:32:07.677Z] CLI Version:   15.0.0
+[debug] [2025-12-17T21:32:07.677Z] Platform:      darwin
+[debug] [2025-12-17T21:32:07.677Z] Node Version:  v22.16.0
+[debug] [2025-12-17T21:32:07.677Z] Time:          Wed Dec 17 2025 14:32:07 GMT-0700 (Mountain Standard Time)
+[debug] [2025-12-17T21:32:07.677Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-17T21:32:07.678Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[error] 
+[error] Error: No currently active project.
+To run this command, you need to specify a project. You have two options:
+- Run this command with --project <alias_or_project_id>.
+- Set an active project by running firebase use --add, then rerun this command.
+To list all the Firebase projects to which you have access, run firebase projects:list.
+To learn about active projects for the CLI, visit https://firebase.google.com/docs/cli#project_aliases
+
+
+[debug] [2025-12-17T21:32:08.858Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-12-17T21:32:08.858Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
